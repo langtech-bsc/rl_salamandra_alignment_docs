@@ -16,7 +16,7 @@ jobs:
     - name: Find absolute path
       run: cd rl_salamandra_alignment && pwd && cd ..
     - name: Install Repo
-      run: pip install -e rl_salamandra_alignment
+      run: pip install typer && pip install -e rl_salamandra_alignment
     - name: dev stuff
       run: ls -a && pip freeze && pwd && which python && which python3
 #    - name: more dev stuff
