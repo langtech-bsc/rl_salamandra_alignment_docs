@@ -28,7 +28,7 @@ jobs:
     - name: setup sphinx
       run: pip install sphinx sphinx-rtd-theme sphinx-autodoc-typehints
     - name: my Build HTML
-      run: sphinx-apidoc -f -o docs/source/ rl_salamandra_alignment/src/rl_salamandra_alignment && sphinx-build docs/source/ docs/build
+      run: sphinx-build docs/source/ docs/build
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
