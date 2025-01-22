@@ -18,7 +18,7 @@ jobs:
     - name: dev stuff
       run: ls -a && pip freeze && pwd
     - name: try import
-      run: python -c "import rl_salamandra_alignment;print('\n'.join(list(dir(rl_salamandra_alignment))))print('Done!')"
+      run: python -c "import rl_salamandra_alignment;print('\n'.join(list(dir(rl_salamandra_alignment))));print('Done!')"
     - name: Build HTML
       uses: ammaraskar/sphinx-action@master
     - name: Upload artifacts
