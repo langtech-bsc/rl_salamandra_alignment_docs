@@ -28,10 +28,10 @@ jobs:
     - name: setup sphinx
       run: pip install sphinx sphinx-rtd-theme sphinx-autodoc-typehints myst_parser
     - name: my Build HTML
-      run: sphinx-build docs/source/ docs/build
-    - name: my Build HTML 2
+      run: sphinx-build docs/source/ docs/build/html
+    #- name: my Build HTML 2
       #run: sphinx-build docs/source/ docs/build
-      run: cd docs && make html && cd ..
+      #run: cd docs && make html && cd ..
     - name: inspect generated files
       run: sudo apt install tree && tree -L 3 docs
     - name: Upload artifacts
