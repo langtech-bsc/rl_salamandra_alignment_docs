@@ -19,12 +19,16 @@ jobs:
       run: pip install -e rl_salamandra_alignment
     - name: dev stuff
       run: ls -a && pip freeze && pwd && which python && which python3
-    - name: more dev stuff
-      run: ls -a /usr/local/bin/ && echo "\n____\n" && ls -a /usr/bin/
+#    - name: more dev stuff
+#      run: ls -a /usr/local/bin/ && echo "\n____\n" && ls -a /usr/bin/
     - name: try import
       run: python -c "import sys;print(sys.executable);print(sys.path);import rl_salamandra_alignment;print('\n'.join(list(dir(rl_salamandra_alignment))));print(rl_salamandra_alignment.__version__);print('Done!')"
-    - name: Build HTML
-      uses: ammaraskar/sphinx-action@master
+    #- name: Build HTML
+    #  uses: ammaraskar/sphinx-action@master
+    - name: setup sphinx
+      run: pip install sphinx sphinx-rtd-theme sphinx-autodoc-typehints
+    - name: my Build HTML
+      run: sphinx-apidoc -f -o docs/source/ rl_salamandra_alignment/src/rl_salamandra_alignment && sphinx-build docs/source/ docs/build
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
