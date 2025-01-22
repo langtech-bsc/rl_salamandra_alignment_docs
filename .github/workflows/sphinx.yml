@@ -12,7 +12,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Clone Repo
-      run: echo git clone https://github.com/langtech-bsc/rl_salamandra_alignment.git rl_repo
+      run: git clone https://github.com/langtech-bsc/rl_salamandra_alignment.git rl_repo
     - name: Install Repo
       run: pip install -e rl_repo
     - name: Build HTML
