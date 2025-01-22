@@ -31,6 +31,8 @@ jobs:
       run: sphinx-build docs/source/ docs/build
     - name: my Build HTML 2
       run: sphinx-build docs/source/ docs/build
+    - name: inspect generated files
+      run: sudo apt install tree && tree -L 3 docs
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
