@@ -1,0 +1,47 @@
+name: "Sphinx: Render docs"
+
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        persist-credentials: false
+    - name: Clone Repo
+      run: git clone https://github.com/langtech-bsc/rl_salamandra_alignment.git
+    - name: Find absolute path
+      run: cd rl_salamandra_alignment && pwd && cd ..
+    - name: Install Repo
+      run: pip install typer && pip install -e rl_salamandra_alignment
+    - name: dev stuff
+      run: ls -a && pip freeze && pwd && which python && which python3
+#    - name: more dev stuff
+#      run: ls -a /usr/local/bin/ && echo "\n____\n" && ls -a /usr/bin/
+    - name: try import
+      run: python -c "import sys;print(sys.executable);print(sys.path);import rl_salamandra_alignment;print('\n'.join(list(dir(rl_salamandra_alignment))));print(rl_salamandra_alignment.__version__);print('Done!')"
+    #- name: Build HTML
+    #  uses: ammaraskar/sphinx-action@master
+    - name: setup sphinx
+      run: pip install sphinx sphinx-rtd-theme sphinx-autodoc-typehints myst_parser
+    - name: my Build HTML
+      run: sphinx-build docs/source/ docs/build/html
+    #- name: my Build HTML 2
+      #run: sphinx-build docs/source/ docs/build
+      #run: cd docs && make html && cd ..
+    - name: inspect generated files
+      run: sudo apt install tree && tree -L 3 docs
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: html-docs
+        path: docs/build/html/
+    - name: Deploy
+      uses: peaceiris/actions-gh-pages@v3
+      if: github.ref == 'refs/heads/main'
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: docs/build/html
