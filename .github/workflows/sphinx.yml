@@ -13,8 +13,8 @@ jobs:
         persist-credentials: false
     - name: Clone Repo
       run: git clone https://github.com/langtech-bsc/rl_salamandra_alignment.git
-    - name: Set Python Path
-      run: export PYTHONPATH="${PYTHONPATH}:$PWD/rl_salamandra_alignment/src/rl_salamandra_alignment"
+    - name: Find absolute path
+      run: cd rl_salamandra_alignment && pwd && cd ..
     - name: Install Repo
       run: pip install -e rl_salamandra_alignment
     - name: dev stuff
