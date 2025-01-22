@@ -85,10 +85,14 @@ author = 'LangTech BSC'
 # the built documents.
 #
 # The short X.Y version.
-version = rl_salamandra_alignment.__version__
-# The full version, including alpha/beta/rc tags.
-release = rl_salamandra_alignment.__version__
+#version = rl_salamandra_alignment.__version__
 
+# TODO: Get this to work automatically
+version = "0.1.0"
+# The full version, including alpha/beta/rc tags.
+#release = rl_salamandra_alignment.__version__
+# TODO: Get this to work automatically
+release = "0.1.0"
 
 # The master toctree document.
 master_doc = 'index'
