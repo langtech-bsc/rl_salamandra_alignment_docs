@@ -1,0 +1,1 @@
+rl_salamandra_alignment @ git+https://github.com/langtech-bsc/rl_salamandra_alignment.git@main
