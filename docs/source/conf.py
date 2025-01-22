@@ -25,6 +25,11 @@ sys.path.insert(
     0, 
     os.path.abspath(os.path.join('..', '..', 'rl_salamandra_alignment'))
     )
+sys.path.insert(
+    0,
+    # Absolute path used in GitHubActions pages, after cloning the repository
+    "/home/runner/work/rl_salamandra_alignment_docs/rl_salamandra_alignment_docs/rl_salamandra_alignment/src"
+)
 
 print("EXECUTABLE")
 print("HERE:",sys.executable)
