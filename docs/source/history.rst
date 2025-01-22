@@ -1,1 +1,1 @@
-.. include:: ../../HISTORY.rst
+.. include:: ../../rl_salamandra_alignment/HISTORY.rst

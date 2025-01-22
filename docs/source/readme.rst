@@ -1,1 +1,1 @@
-.. include:: ../../README.rst
+.. include:: ../../rl_salamandra_alignment/README.rst
