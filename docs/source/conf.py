@@ -30,6 +30,16 @@ sys.path.insert(
     # Absolute path used in GitHubActions pages, after cloning the repository
     "/home/runner/work/rl_salamandra_alignment_docs/rl_salamandra_alignment_docs/rl_salamandra_alignment/src"
 )
+sys.path.insert(
+    0,
+    # Absolute path used in GitHubActions pages, after cloning the repository
+    "/home/runner/work/rl_salamandra_alignment_docs/rl_salamandra_alignment_docs/rl_salamandra_alignment"
+)
+sys.path.insert(
+    0,
+    # Absolute path used in GitHubActions pages, after cloning the repository
+    "/home/runner/work/rl_salamandra_alignment_docs/rl_salamandra_alignment_docs/rl_salamandra_alignment/src/rl_salamandra_alignment"
+)
 
 print("EXECUTABLE")
 print("HERE:",sys.executable)
