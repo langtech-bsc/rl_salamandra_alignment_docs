@@ -24,6 +24,7 @@ import sys
 
 print("EXECUTABLE")
 print("HERE:",sys.executable)
+print("PATH:", "\n".join(sys.path))
 import time
 time.sleep(5)
 

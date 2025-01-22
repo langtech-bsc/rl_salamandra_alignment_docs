@@ -14,7 +14,7 @@ jobs:
     - name: Clone Repo
       run: git clone https://github.com/langtech-bsc/rl_salamandra_alignment.git
     - name: Set Python Path
-      run: export PYTHONPATH="$PWD/rl_salamandra_alignment/src/rl_salamandra_alignment"
+      run: export PYTHONPATH="${PYTHONPATH}:$PWD/rl_salamandra_alignment/src/rl_salamandra_alignment"
     - name: Install Repo
       run: pip install -e rl_salamandra_alignment
     - name: dev stuff
@@ -22,7 +22,7 @@ jobs:
     - name: more dev stuff
       run: ls -a /usr/local/bin/ && echo "\n____\n" && ls -a /usr/bin/
     - name: try import
-      run: python -c "import sys;print(sys.executable);import rl_salamandra_alignment;print('\n'.join(list(dir(rl_salamandra_alignment))));print(rl_salamandra_alignment.__version__);print('Done!')"
+      run: python -c "import sys;print(sys.executable);print(sys.path);import rl_salamandra_alignment;print('\n'.join(list(dir(rl_salamandra_alignment))));print(rl_salamandra_alignment.__version__);print('Done!')"
     - name: Build HTML
       uses: ammaraskar/sphinx-action@master
     - name: Upload artifacts
