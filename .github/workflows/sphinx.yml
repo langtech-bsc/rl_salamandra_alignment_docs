@@ -17,6 +17,8 @@ jobs:
       run: pip install -e rl_salamandra_alignment
     - name: dev stuff
       run: ls -a && pip freeze && pwd && which python && which python3
+    - name: more dev stuff
+      run: ls -a /usr/local/bin/ && echo "\n____\n" && ls -a /usr/bin/
     - name: try import
       run: python -c "import sys;print(sys.executable);import rl_salamandra_alignment;print('\n'.join(list(dir(rl_salamandra_alignment))));print(rl_salamandra_alignment.__version__);print('Done!')"
     - name: Build HTML
