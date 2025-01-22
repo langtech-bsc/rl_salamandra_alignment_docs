@@ -1,1 +1,1 @@
-.. include:: ../../AUTHORS.rst
+.. include:: ../../rl_salamandra_alignment/AUTHORS.rst
