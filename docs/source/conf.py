@@ -21,7 +21,10 @@ import os
 import sys
 #sys.path.insert(0, os.path.abspath('..'))
 #sys.path.insert(0, os.path.abspath(os.path.join('..', '..')))
+import sys
 
+print("EXECUTABLE")
+print(sys.executable)
 import rl_salamandra_alignment
 
 # -- General configuration ---------------------------------------------
