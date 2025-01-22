@@ -16,8 +16,7 @@ jobs:
     - name: Install Repo
       run: pip install -e rl_repo
     - name: dev stuff
-      run: ls -a
-      run: pip freeze
+      run: ls -a && pip freeze && pwd
     - name: Build HTML
       uses: ammaraskar/sphinx-action@master
     - name: Upload artifacts
