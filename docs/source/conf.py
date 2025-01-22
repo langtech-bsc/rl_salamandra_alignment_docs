@@ -104,7 +104,9 @@ todo_include_todos = False
 
 #html_#theme = 'alabaster'
 html_theme = 'sphinx_rtd_theme'
-html_static_path = ['_static']
+html_static_path = [
+    #'_static'
+    ]
 
 
 # -- Options for HTMLHelp output ---------------------------------------
