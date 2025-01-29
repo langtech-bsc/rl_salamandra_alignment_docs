@@ -2,10 +2,10 @@
 Usage
 =====
 
-After :doc:`installing <installation>`, you will be able to run RL experiments using the :ref:`CLI <rl-salamandra-alignment>`
+After :doc:`installing <installation>`, you will be able to run RL experiments using the package.
 
 Configuration file for Experiment
---------------
+---------------------------------
 
 First, you will need a configuration file in YAML for your experiment:
 
@@ -15,12 +15,12 @@ First, you will need a configuration file in YAML for your experiment:
 
     execution:
         algorithm: "dpo"
-        venv: "path_to_your_venv"
-        output_dir: "experiment_outputs"
+        venv: "<path_to_your_venv>"
+        output_dir: "<path_to_your_output_dir>"
         distributed_config: "DSZero3Offload"
 
     slurm:
-        job-name: "rl_salamandra_alignment"
+        job-name: "<your_slurm_job_name>"
         # output: None
         # error: None
         nodes: 2
@@ -31,10 +31,10 @@ First, you will need a configuration file in YAML for your experiment:
         qos: "acc_debug"
 
     rl_script_args:
-        dataset_name: "path_to_rl_dataset"
+        dataset_name: "<path_to_rl_dataset>"
 
     model_config_args:
-        model_name_or_path: "path_to_model"
+        model_name_or_path: "<path_to_model>"
         # output_dir: None
         attn_implementation: "flash_attention_2"
         torch_dtype: "bfloat16"
@@ -68,12 +68,13 @@ First, you will need a configuration file in YAML for your experiment:
         gradient_checkpointing: true
 
     environment:
+        # Bash environment variables 
         WANDB_PROJECT: "salamandra_alignment"
         WANDB_NAME: "test_alignment"
         # WANDB_DIR: None
 
 
-The values marked with `None` are computed internally by the package.
+The values marked with ``None`` are computed internally by the package.
 
 
 Subexperiments
@@ -81,12 +82,15 @@ Subexperiments
 
 To experiment with different configurations of values, you can use lists in your `config.yaml` file.
 
-For example, the following `config.yaml` for one experiment executes 12 experiments: 6 runs of DPO on 2 models with 3 learning rates, and other 6 runs for KTO.
+For example, the following ``config.yaml`` for one experiment executes 12 experiments: 
+
+- 6 runs of DPO on 2 models with 3 learning rates, and
+- other 6 runs for KTO
 
 .. code-block:: yaml
     :caption: Setting up subexperiments
     :name: example_subexperiments_config
-    
+
     ...
     execution:
         algorithm: ["dpo", "kto"]
@@ -98,16 +102,16 @@ For example, the following `config.yaml` for one experiment executes 12 experime
         learning_rate: [5.0e-6, 1.0e-5, 1.0e-6]
     ...
 
-Note that any of the values can be a list, _except_ `output_dir` under `execution`. The `output_dir` must always be an absolute path. 
+Note that any of the values can be a list, **except** ``output_dir`` under ``execution``. The ``output_dir`` must always be an absolute path. 
 
 Generating Job scripts
 ----------------------
 
-You can use your `config.yaml` file to run an experiment, using the :ref:`CLI <rl-salamandra-alignment.cli>`:
+You can use your ``config.yaml`` file to run an experiment, using the :ref:`CLI <rl-salamandra-alignment.cli>`:
 
 .. code-block:: console
 
     $ rl_salamandra_mn5 config.yaml
 
-This will generate slurm jobs in your `output_dir`, which you can submit to MareNostrum5
+This will generate slurm jobs in your ``output_dir``, which you can submit to MareNostrum 5.
 

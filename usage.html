@@ -85,7 +85,7 @@
              
   <section id="usage">
 <h1>Usage<a class="headerlink" href="#usage" title="Link to this heading"></a></h1>
-<p>After <a class="reference internal" href="installation.html"><span class="doc">installing</span></a>, you will be able to run RL experiments using the <span class="xref std std-ref">CLI</span></p>
+<p>After <a class="reference internal" href="installation.html"><span class="doc">installing</span></a>, you will be able to run RL experiments using the package.</p>
 <section id="configuration-file-for-experiment">
 <h2>Configuration file for Experiment<a class="headerlink" href="#configuration-file-for-experiment" title="Link to this heading"></a></h2>
 <p>First, you will need a configuration file in YAML for your experiment:</p>
@@ -93,12 +93,12 @@
 <div class="code-block-caption"><span class="caption-text">Example YAML configuration file</span><a class="headerlink" href="#example-yaml-config" title="Link to this code"></a></div>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">execution</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">algorithm</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;dpo&quot;</span>
-<span class="w">    </span><span class="nt">venv</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;path_to_your_venv&quot;</span>
-<span class="w">    </span><span class="nt">output_dir</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;experiment_outputs&quot;</span>
+<span class="w">    </span><span class="nt">venv</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;path_to_your_venv&gt;&quot;</span>
+<span class="w">    </span><span class="nt">output_dir</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;path_to_your_output_dir&gt;&quot;</span>
 <span class="w">    </span><span class="nt">distributed_config</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;DSZero3Offload&quot;</span>
 
 <span class="nt">slurm</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">job-name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;rl_salamandra_alignment&quot;</span>
+<span class="w">    </span><span class="nt">job-name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;your_slurm_job_name&gt;&quot;</span>
 <span class="w">    </span><span class="c1"># output: None</span>
 <span class="w">    </span><span class="c1"># error: None</span>
 <span class="w">    </span><span class="nt">nodes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
@@ -109,10 +109,10 @@
 <span class="w">    </span><span class="nt">qos</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;acc_debug&quot;</span>
 
 <span class="nt">rl_script_args</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">dataset_name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;path_to_rl_dataset&quot;</span>
+<span class="w">    </span><span class="nt">dataset_name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;path_to_rl_dataset&gt;&quot;</span>
 
 <span class="nt">model_config_args</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">model_name_or_path</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;path_to_model&quot;</span>
+<span class="w">    </span><span class="nt">model_name_or_path</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;path_to_model&gt;&quot;</span>
 <span class="w">    </span><span class="c1"># output_dir: None</span>
 <span class="w">    </span><span class="nt">attn_implementation</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;flash_attention_2&quot;</span>
 <span class="w">    </span><span class="nt">torch_dtype</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;bfloat16&quot;</span>
@@ -146,18 +146,23 @@
 <span class="w">    </span><span class="nt">gradient_checkpointing</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 
 <span class="nt">environment</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># Bash environment variables</span>
 <span class="w">    </span><span class="nt">WANDB_PROJECT</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;salamandra_alignment&quot;</span>
 <span class="w">    </span><span class="nt">WANDB_NAME</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;test_alignment&quot;</span>
 <span class="w">    </span><span class="c1"># WANDB_DIR: None</span>
 </pre></div>
 </div>
 </div>
-<p>The values marked with <cite>None</cite> are computed internally by the package.</p>
+<p>The values marked with <code class="docutils literal notranslate"><span class="pre">None</span></code> are computed internally by the package.</p>
 </section>
 <section id="subexperiments">
 <h2>Subexperiments<a class="headerlink" href="#subexperiments" title="Link to this heading"></a></h2>
 <p>To experiment with different configurations of values, you can use lists in your <cite>config.yaml</cite> file.</p>
-<p>For example, the following <cite>config.yaml</cite> for one experiment executes 12 experiments: 6 runs of DPO on 2 models with 3 learning rates, and other 6 runs for KTO.</p>
+<p>For example, the following <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> for one experiment executes 12 experiments:</p>
+<ul class="simple">
+<li><p>6 runs of DPO on 2 models with 3 learning rates, and</p></li>
+<li><p>other 6 runs for KTO</p></li>
+</ul>
 <div class="literal-block-wrapper docutils container" id="example-subexperiments-config">
 <div class="code-block-caption"><span class="caption-text">Setting up subexperiments</span><a class="headerlink" href="#example-subexperiments-config" title="Link to this code"></a></div>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nn">...</span>
@@ -173,15 +178,15 @@
 </pre></div>
 </div>
 </div>
-<p>Note that any of the values can be a list, _except_ <cite>output_dir</cite> under <cite>execution</cite>. The <cite>output_dir</cite> must always be an absolute path.</p>
+<p>Note that any of the values can be a list, <strong>except</strong> <code class="docutils literal notranslate"><span class="pre">output_dir</span></code> under <code class="docutils literal notranslate"><span class="pre">execution</span></code>. The <code class="docutils literal notranslate"><span class="pre">output_dir</span></code> must always be an absolute path.</p>
 </section>
 <section id="generating-job-scripts">
 <h2>Generating Job scripts<a class="headerlink" href="#generating-job-scripts" title="Link to this heading"></a></h2>
-<p>You can use your <cite>config.yaml</cite> file to run an experiment, using the <span class="xref std std-ref">CLI</span>:</p>
+<p>You can use your <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> file to run an experiment, using the <span class="xref std std-ref">CLI</span>:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>rl_salamandra_mn5<span class="w"> </span>config.yaml
 </pre></div>
 </div>
-<p>This will generate slurm jobs in your <cite>output_dir</cite>, which you can submit to MareNostrum5</p>
+<p>This will generate slurm jobs in your <code class="docutils literal notranslate"><span class="pre">output_dir</span></code>, which you can submit to MareNostrum 5.</p>
 </section>
 </section>
 
