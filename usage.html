@@ -158,6 +158,21 @@
 <h2>Subexperiments<a class="headerlink" href="#subexperiments" title="Link to this heading"></a></h2>
 <p>To experiment with different configurations of values, you can use lists in your <cite>config.yaml</cite> file.</p>
 <p>For example, the following <cite>config.yaml</cite> for one experiment executes 12 experiments: 6 runs of DPO on 2 models with 3 learning rates, and other 6 runs for KTO.</p>
+<div class="literal-block-wrapper docutils container" id="example-subexperiments-config">
+<div class="code-block-caption"><span class="caption-text">Setting up subexperiments</span><a class="headerlink" href="#example-subexperiments-config" title="Link to this code"></a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nn">...</span>
+<span class="nt">execution</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">algorithm</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;dpo&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;kto&quot;</span><span class="p p-Indicator">]</span>
+<span class="nn">...</span>
+<span class="nt">model_config_args</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">model_name_or_path</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;model_1&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;model_2&quot;</span><span class="p p-Indicator">]</span>
+<span class="nn">...</span>
+<span class="nt">rl_config_args</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">learning_rate</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">5.0e-6</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">1.0e-5</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">1.0e-6</span><span class="p p-Indicator">]</span>
+<span class="nn">...</span>
+</pre></div>
+</div>
+</div>
 <p>Note that any of the values can be a list, _except_ <cite>output_dir</cite> under <cite>execution</cite>. The <cite>output_dir</cite> must always be an absolute path.</p>
 </section>
 <section id="generating-job-scripts">
