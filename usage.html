@@ -20,7 +20,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Índice" href="genindex.html" />
     <link rel="search" title="Búsqueda" href="search.html" />
-    <link rel="next" title="rl_salamandra_alignment" href="modules.html" />
+    <link rel="next" title="RL - Salamandra Alignment" href="readme.html" />
     <link rel="prev" title="Installation" href="installation.html" /> 
 </head>
 
@@ -45,9 +45,14 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="readme.html">RL - Salamandra Alignment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Usage</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#configuration-file-for-experiment">Configuration file for Experiment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#subexperiments">Subexperiments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#generating-job-scripts">Generating Job scripts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html">RL - Salamandra Alignment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">rl_salamandra_alignment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">Credits</a></li>
@@ -80,10 +85,89 @@
              
   <section id="usage">
 <h1>Usage<a class="headerlink" href="#usage" title="Link to this heading"></a></h1>
-<p>To use RL - Salamandra Alignment in a project:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">rl_salamandra_alignment</span>
+<p>After <a class="reference internal" href="installation.html"><span class="doc">installing</span></a>, you will be able to run RL experiments using the <span class="xref std std-ref">CLI</span></p>
+<section id="configuration-file-for-experiment">
+<h2>Configuration file for Experiment<a class="headerlink" href="#configuration-file-for-experiment" title="Link to this heading"></a></h2>
+<p>First, you will need a configuration file in YAML for your experiment:</p>
+<div class="literal-block-wrapper docutils container" id="example-yaml-config">
+<div class="code-block-caption"><span class="caption-text">Example YAML configuration file</span><a class="headerlink" href="#example-yaml-config" title="Link to this code"></a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">execution</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">algorithm</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;dpo&quot;</span>
+<span class="w">    </span><span class="nt">venv</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;path_to_your_venv&quot;</span>
+<span class="w">    </span><span class="nt">output_dir</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;experiment_outputs&quot;</span>
+<span class="w">    </span><span class="nt">distributed_config</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;DSZero3Offload&quot;</span>
+
+<span class="nt">slurm</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">job-name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;rl_salamandra_alignment&quot;</span>
+<span class="w">    </span><span class="c1"># output: None</span>
+<span class="w">    </span><span class="c1"># error: None</span>
+<span class="w">    </span><span class="nt">nodes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+<span class="w">    </span><span class="nt">cpus-per-task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span>
+<span class="w">    </span><span class="nt">gres</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;gpu:4&quot;</span>
+<span class="w">    </span><span class="nt">time</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;2:00:00&quot;</span>
+<span class="w">    </span><span class="nt">account</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;bsc88&quot;</span>
+<span class="w">    </span><span class="nt">qos</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;acc_debug&quot;</span>
+
+<span class="nt">rl_script_args</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">dataset_name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;path_to_rl_dataset&quot;</span>
+
+<span class="nt">model_config_args</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">model_name_or_path</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;path_to_model&quot;</span>
+<span class="w">    </span><span class="c1"># output_dir: None</span>
+<span class="w">    </span><span class="nt">attn_implementation</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;flash_attention_2&quot;</span>
+<span class="w">    </span><span class="nt">torch_dtype</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;bfloat16&quot;</span>
+
+<span class="nt">rl_config_args</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># RL configs are subclasses of transformers.TrainingArguments</span>
+
+<span class="w">    </span><span class="c1"># Different RL algorithms have different uses of beta.</span>
+<span class="w">    </span><span class="c1"># However, in most of them, it is the weight of the KL-divergence (Loss=reward+Beta*KL)</span>
+<span class="w">    </span><span class="nt">beta</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.2</span>
+<span class="w">    </span><span class="nt">max_length</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8192</span>
+<span class="w">    </span><span class="nt">max_prompt_length</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">128</span><span class="w"> </span><span class="c1"># Default. When specified, you use the default data collator</span>
+<span class="w">    </span><span class="nt">remove_unused_columns</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">    </span><span class="nt">dataset_num_proc</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="w">    </span><span class="c1"># ====</span>
+<span class="w">    </span><span class="c1"># From `TrainingArguments`:</span>
+<span class="w">    </span><span class="c1"># ===</span>
+<span class="w">    </span><span class="nt">learning_rate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5.0e-6</span>
+<span class="w">    </span><span class="nt">num_train_epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+<span class="w">    </span><span class="nt">bf16</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">eval_strategy</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;steps&quot;</span>
+<span class="w">    </span><span class="nt">eval_steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.05</span>
+
+<span class="w">    </span><span class="c1"># logging_dir: None</span>
+<span class="w">    </span><span class="c1"># local_rank: None</span>
+<span class="w">    </span><span class="nt">report_to</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;wandb&quot;</span>
+<span class="w">    </span><span class="c1"># These arguments help to manage GPU memory</span>
+<span class="w">    </span><span class="nt">per_device_train_batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+<span class="w">    </span><span class="nt">per_device_eval_batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+<span class="w">    </span><span class="nt">gradient_accumulation_steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8</span>
+<span class="w">    </span><span class="nt">gradient_checkpointing</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="nt">environment</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">WANDB_PROJECT</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;salamandra_alignment&quot;</span>
+<span class="w">    </span><span class="nt">WANDB_NAME</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;test_alignment&quot;</span>
+<span class="w">    </span><span class="c1"># WANDB_DIR: None</span>
 </pre></div>
 </div>
+</div>
+<p>The values marked with <cite>None</cite> are computed internally by the package.</p>
+</section>
+<section id="subexperiments">
+<h2>Subexperiments<a class="headerlink" href="#subexperiments" title="Link to this heading"></a></h2>
+<p>To experiment with different configurations of values, you can use lists in your <cite>config.yaml</cite> file.</p>
+<p>For example, the following <cite>config.yaml</cite> for one experiment executes 12 experiments: 6 runs of DPO on 2 models with 3 learning rates, and other 6 runs for KTO.</p>
+<p>Note that any of the values can be a list, _except_ <cite>output_dir</cite> under <cite>execution</cite>. The <cite>output_dir</cite> must always be an absolute path.</p>
+</section>
+<section id="generating-job-scripts">
+<h2>Generating Job scripts<a class="headerlink" href="#generating-job-scripts" title="Link to this heading"></a></h2>
+<p>You can use your <cite>config.yaml</cite> file to run an experiment, using the <span class="xref std std-ref">CLI</span>:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>rl_salamandra_mn5<span class="w"> </span>config.yaml
+</pre></div>
+</div>
+<p>This will generate slurm jobs in your <cite>output_dir</cite>, which you can submit to MareNostrum5</p>
+</section>
 </section>
 
 
@@ -91,7 +175,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pie de página">
         <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Anterior</a>
-        <a href="modules.html" class="btn btn-neutral float-right" title="rl_salamandra_alignment" accesskey="n" rel="next">Siguiente <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="readme.html" class="btn btn-neutral float-right" title="RL - Salamandra Alignment" accesskey="n" rel="next">Siguiente <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

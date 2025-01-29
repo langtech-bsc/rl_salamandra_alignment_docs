@@ -8,11 +8,23 @@ Installation
 Stable release
 --------------
 
-To install RL - Salamandra Alignment, run this command in your terminal:
+To install RL - Salamandra Alignment, first prepare a new virtual environment:
+
+.. code-block:: console
+    
+    $ pip install trl==0.13.0
+    $ pip install wheel
+    $ pip install flash-attn==2.6.3 --no-build-isolation
+    $ pip install sentencepiece==0.2.0 protobuf==5.28.2
+    $ pip install deepspeed==0.15.1
+    $ pip uninstall triton -y
+    $ pip install wandb
+
+Now, run this command in your terminal:
 
 .. code-block:: console
 
-    $ pip install rl_salamandra_alignment
+    $ pip install git+https://github.com/langtech-bsc/rl_salamandra_alignment.git
 
 This is the preferred method to install RL - Salamandra Alignment, as it will always install the most recent stable release.
 
@@ -23,29 +35,20 @@ you through the process.
 .. _Python installation guide: http://docs.python-guide.org/en/latest/starting/installation/
 
 
-From sources
+Experimental Release
 ------------
 
 The sources for RL - Salamandra Alignment can be downloaded from the `Github repo`_.
 
-You can either clone the public repository:
+After preparing a new virtual environment (explained above), you can clone the public repository:
 
 .. code-block:: console
 
-    $ git clone git://github.com/langtech-bsc/rl_salamandra_alignment
+    $ git clone https://github.com/langtech-bsc/rl_salamandra_alignment.git
 
-Or download the `tarball`_:
 
-.. code-block:: console
-
-    $ curl -OJL https://github.com/langtech-bsc/rl_salamandra_alignment/tarball/master
-
-Once you have a copy of the source, you can install it with:
+Once you have a copy of the source, you can install it in editable mode with:
 
 .. code-block:: console
 
-    $ python setup.py install
-
-
-.. _Github repo: https://github.com/langtech-bsc/rl_salamandra_alignment
-.. _tarball: https://github.com/langtech-bsc/rl_salamandra_alignment/tarball/master
+    $ pip install -e rl_salamandra_alignment

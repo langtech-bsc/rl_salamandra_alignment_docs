@@ -6,18 +6,15 @@
 RL - Salamandra Alignment documentation
 =======================================
 
-Add your content using ``reStructuredText`` syntax. See the
-`reStructuredText <https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html>`_
-documentation for details.
-
+Reinforcement Learning for Salamandra Models in MareNostrum 5
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-   readme
    installation
    usage
+   readme
    modules
    contributing
    authors
