@@ -66,6 +66,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">Código de módulo</a></li>
+          <li class="breadcrumb-item"><a href="../rl_salamandra_alignment.html">rl_salamandra_alignment</a></li>
       <li class="breadcrumb-item active">rl_salamandra_alignment.cli</li>
       <li class="wy-breadcrumbs-aside">
       </li>
@@ -78,28 +79,31 @@
   <h1>Código fuente para rl_salamandra_alignment.cli</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Console script for rl_salamandra_alignment.&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">rl_salamandra_alignment</span>
-
-<span class="kn">import</span> <span class="nn">typer</span>
-<span class="kn">from</span> <span class="nn">rich.console</span> <span class="kn">import</span> <span class="n">Console</span>
-
-<span class="n">app</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Typer</span><span class="p">()</span>
-<span class="n">console</span> <span class="o">=</span> <span class="n">Console</span><span class="p">()</span>
-
+<span class="kn">from</span> <span class="nn">argparse</span> <span class="kn">import</span> <span class="n">ArgumentParser</span>
+<span class="kn">from</span> <span class="nn">rl_salamandra_alignment.generate_scripts</span> <span class="kn">import</span> <span class="n">generate_all_job_files</span>
+<span class="kn">from</span> <span class="nn">rl_salamandra_alignment.utils.general</span> <span class="kn">import</span> <span class="n">try_load_config</span>
 
 <div class="viewcode-block" id="main">
 <a class="viewcode-back" href="../../rl_salamandra_alignment.html#rl_salamandra_alignment.cli.main">[documentos]</a>
-<span class="nd">@app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Console script for rl_salamandra_alignment.&quot;&quot;&quot;</span>
-    <span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="s2">&quot;Replace this message by putting your code into &quot;</span>
-               <span class="s2">&quot;rl_salamandra_alignment.cli.main&quot;</span><span class="p">)</span>
-    <span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="s2">&quot;See Typer documentation at https://typer.tiangolo.com/&quot;</span><span class="p">)</span></div>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reinforcement Learning for Salamandra on MN5&quot;&quot;&quot;</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">ArgumentParser</span><span class="p">()</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;config&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;YAML Config file for RL&quot;</span><span class="p">)</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
 
-    
+    <span class="n">config</span> <span class="o">=</span> <span class="n">try_load_config</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
+    <span class="n">all_job_files</span> <span class="o">=</span> <span class="n">generate_all_job_files</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">distributed_run_script</span><span class="p">,</span> <span class="n">launch_script</span> <span class="ow">in</span> <span class="n">all_job_files</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="o">*</span><span class="mi">10</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Distributed execution script:</span><span class="se">\n</span><span class="si">{</span><span class="n">distributed_run_script</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Launch script:</span><span class="se">\n</span><span class="si">{</span><span class="n">launch_script</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">app</span><span class="p">()</span>
+    <span class="n">main</span><span class="p">()</span>
 </pre></div>
 
            </div>
