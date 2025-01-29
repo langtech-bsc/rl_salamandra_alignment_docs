@@ -27,6 +27,8 @@ jobs:
     #  uses: ammaraskar/sphinx-action@master
     - name: setup sphinx
       run: pip install sphinx sphinx-rtd-theme sphinx-autodoc-typehints myst_parser
+    - name: "API Documentation: Build source"
+      run: sphinx-apidoc -f -o docs/source/ rl_salamandra_alignment/src/rl_salamandra_alignment
     - name: my Build HTML
       run: sphinx-build docs/source/ docs/build/html
     #- name: my Build HTML 2
