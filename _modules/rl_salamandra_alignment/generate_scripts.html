@@ -1,0 +1,592 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="es" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>rl_salamandra_alignment.generate_scripts &mdash; documentación de RL - Salamandra Alignment - 0.1.0</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=ba61de6b"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/translations.js?v=f85f4cfb"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Índice" href="../../genindex.html" />
+    <link rel="search" title="Búsqueda" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            RL - Salamandra Alignment
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Buscar documentos" aria-label="Buscar documentos" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html">RL - Salamandra Alignment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">rl_salamandra_alignment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../history.html">History</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">RL - Salamandra Alignment</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Código de módulo</a></li>
+          <li class="breadcrumb-item"><a href="../rl_salamandra_alignment.html">rl_salamandra_alignment</a></li>
+      <li class="breadcrumb-item active">rl_salamandra_alignment.generate_scripts</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Código fuente para rl_salamandra_alignment.generate_scripts</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span> <span class="nn">rl_salamandra_alignment.distributed_configs</span> <span class="kn">import</span> <span class="n">get_distributed_config_path</span>
+<span class="kn">from</span> <span class="nn">rl_salamandra_alignment.trl_scripts</span> <span class="kn">import</span> <span class="n">get_script_path</span>
+<span class="kn">from</span> <span class="nn">rl_salamandra_alignment</span> <span class="kn">import</span> <span class="n">templates</span>
+<span class="kn">from</span> <span class="nn">rl_salamandra_alignment</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span> <span class="nn">rl_salamandra_alignment.utils.general</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">unfold_dict</span>
+<span class="p">)</span>
+
+
+
+
+<div class="viewcode-block" id="generate_slurm_preamble">
+<a class="viewcode-back" href="../../rl_salamandra_alignment.html#rl_salamandra_alignment.generate_scripts.generate_slurm_preamble">[documentos]</a>
+<span class="k">def</span> <span class="nf">generate_slurm_preamble</span><span class="p">(</span><span class="n">sbatch_args</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate the preamble for a slurm job.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        sbatch_args (dict): Arguments for Sbatch</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: Preamble with all #SBATCHs filled</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">slurm_preamble</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="c1"># Fill &quot;#SBATCH&quot; arguments</span>
+    <span class="k">for</span> <span class="n">arg_name</span><span class="p">,</span> <span class="n">arg_value</span> <span class="ow">in</span> <span class="n">sbatch_args</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">slurm_preamble</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;#SBATCH --</span><span class="si">{</span><span class="n">arg_name</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">arg_value</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+    <span class="n">slurm_preamble</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">*</span><span class="mi">2</span>
+    <span class="k">return</span> <span class="n">slurm_preamble</span></div>
+
+
+
+<div class="viewcode-block" id="replace_in_template">
+<a class="viewcode-back" href="../../rl_salamandra_alignment.html#rl_salamandra_alignment.generate_scripts.replace_in_template">[documentos]</a>
+<span class="k">def</span> <span class="nf">replace_in_template</span><span class="p">(</span>
+    <span class="n">text_template</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">variable_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">variable_value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Inside a template, replaces a variable name &quot;{{MY_VAR}}&quot; by a value</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        text_template (str): Template</span>
+<span class="sd">        variable_name (str): Name of the variable in all caps.</span>
+<span class="sd">        variable_value (Union[str, int, float]): Value of the variable</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: template with the filled slot</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">text_template</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+        <span class="sa">r</span><span class="s2">&quot;{{&quot;</span><span class="o">+</span><span class="n">variable_name</span><span class="o">+</span><span class="sa">r</span><span class="s2">&quot;}}&quot;</span><span class="p">,</span>
+        <span class="n">variable_value</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_output_dir">
+<a class="viewcode-back" href="../../rl_salamandra_alignment.html#rl_salamandra_alignment.generate_scripts.get_output_dir">[documentos]</a>
+<span class="k">def</span> <span class="nf">get_output_dir</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract the field &#39;output directory&#39; from a config dict, making sure it is a string</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        config (dict): execution config dict for experiment</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: Raised if the value is not a string (e.g. a list).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: Path to the output directory</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">output_dir</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;execution&quot;</span><span class="p">][</span><span class="s2">&quot;output_dir&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found &#39;output_dir of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;output_dir&#39; must be a string&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">output_dir</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;&#39;output_dir&#39; must be specified in your config file under &#39;execution&#39;&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="setup_macro_output_dir_tree">
+<a class="viewcode-back" href="../../rl_salamandra_alignment.html#rl_salamandra_alignment.generate_scripts.setup_macro_output_dir_tree">[documentos]</a>
+<span class="k">def</span> <span class="nf">setup_macro_output_dir_tree</span><span class="p">(</span><span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Construct the directory tree for running an experiment.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        output_dir (str): root directory for the outputs of the experiment.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">subdirs</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;slurm_scripts&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;slurm_logs&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;wandb&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;cache&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;training&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;configs&quot;</span>
+    <span class="p">]</span>
+    <span class="k">for</span> <span class="n">subdir</span> <span class="ow">in</span> <span class="n">subdirs</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">subdir</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">_internal_dir_paths</span><span class="p">(</span><span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate paths to directories used for the outputs of a subexperiment.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        output_dir (str): root directory for the outputs of the experiment.</span>
+<span class="sd">        id (str): Sub-experiment id</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: Dictionary with the paths to the directories for the subexperiment</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">k</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">,</span> <span class="s2">&quot;cache&quot;</span><span class="p">,</span> <span class="s2">&quot;training&quot;</span><span class="p">]</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">d</span>
+
+
+<span class="k">def</span> <span class="nf">_internal_file_paths</span><span class="p">(</span><span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate paths to directories used for the outputs of a subexperiment.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        output_dir (str): root directory for the outputs of the experiment.</span>
+<span class="sd">        id (str): Sub-experiment id</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: Dictionary with the paths to the files for the subexperiment</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;slrum_script_distrubuted_run&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="s2">&quot;slurm_scripts&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;distributed_run_</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s2">.job&quot;</span><span class="p">),</span>
+        <span class="s2">&quot;slurm_script_launch&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="s2">&quot;slurm_scripts&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;launch_</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s1">.sh&#39;</span><span class="p">),</span>
+        <span class="s2">&quot;slurm_output&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="s2">&quot;slurm_logs&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s2">_output.log&quot;</span><span class="p">),</span>
+        <span class="s2">&quot;slurm_error&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="s2">&quot;slurm_logs&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s2">_error.log&quot;</span><span class="p">),</span>
+        <span class="s2">&quot;config&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="s2">&quot;configs&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;config_</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s2">.json&quot;</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">d</span>
+
+
+<div class="viewcode-block" id="setup_micro_output_dir_tree">
+<a class="viewcode-back" href="../../rl_salamandra_alignment.html#rl_salamandra_alignment.generate_scripts.setup_micro_output_dir_tree">[documentos]</a>
+<span class="k">def</span> <span class="nf">setup_micro_output_dir_tree</span><span class="p">(</span>
+    <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Construct the directory tree for running a subexperiment.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        output_dir (str): root directory for the outputs of the experiment.</span>
+<span class="sd">        config (dict): execution config dict for subexperiment</span>
+<span class="sd">        id (str): Sub-experiment id</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># slurm scripts -&gt; handled by &#39;generate_*_script&#39; functions</span>
+    <span class="c1"># slurm logs -&gt; handled by &#39;generate_*_script&#39; functions</span>
+    <span class="n">internal_dir_paths</span> <span class="o">=</span> <span class="n">_internal_dir_paths</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+    <span class="c1"># wandb :</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span>
+        <span class="n">internal_dir_paths</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">],</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+    <span class="c1"># cache</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span>
+        <span class="n">internal_dir_paths</span><span class="p">[</span><span class="s2">&quot;cache&quot;</span><span class="p">],</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+    <span class="c1"># training</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span>
+        <span class="n">internal_dir_paths</span><span class="p">[</span><span class="s2">&quot;training&quot;</span><span class="p">],</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+    <span class="c1"># configs</span>
+    <span class="n">internal_file_paths</span> <span class="o">=</span> <span class="n">_internal_file_paths</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span>
+        <span class="n">internal_file_paths</span><span class="p">[</span><span class="s2">&quot;config&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;w&quot;</span>
+    <span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="generate_distributed_run_script">
+<a class="viewcode-back" href="../../rl_salamandra_alignment.html#rl_salamandra_alignment.generate_scripts.generate_distributed_run_script">[documentos]</a>
+<span class="k">def</span> <span class="nf">generate_distributed_run_script</span><span class="p">(</span>
+        <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+        <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Write the script for distributed execution of a subexperiment, by filling out the script template.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        output_dir (str): root directory for the outputs of the experiment.</span>
+<span class="sd">        config (dict): execution config dict for subexperiment</span>
+<span class="sd">        id (str): Sub-experiment id</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: Text of the script for distributed execution</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">filled_template</span> <span class="o">=</span> <span class="n">templates</span><span class="o">.</span><span class="n">get_distributed_run_template</span><span class="p">()</span>
+    <span class="n">internal_file_paths</span> <span class="o">=</span> <span class="n">_internal_file_paths</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+
+    <span class="c1"># ============</span>
+    <span class="c1"># Slurm preamble</span>
+    <span class="c1"># ============</span>
+
+    <span class="c1"># Automatically determine log file</span>
+    <span class="n">slurm_config</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;slurm&quot;</span><span class="p">])</span>
+    <span class="n">output_dir</span> <span class="o">=</span> <span class="n">get_output_dir</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+    <span class="n">slurm_config</span><span class="p">[</span><span class="s2">&quot;job-name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">id</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">slurm_config</span><span class="p">[</span><span class="s2">&quot;job-name&quot;</span><span class="p">]</span>
+    <span class="n">slurm_config</span><span class="p">[</span><span class="s2">&quot;output&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">internal_file_paths</span><span class="p">[</span><span class="s2">&quot;slurm_output&quot;</span><span class="p">]</span>
+    <span class="n">slurm_config</span><span class="p">[</span><span class="s2">&quot;error&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">internal_file_paths</span><span class="p">[</span><span class="s2">&quot;slurm_error&quot;</span><span class="p">]</span>
+
+    <span class="n">slurm_preamble</span> <span class="o">=</span> <span class="n">generate_slurm_preamble</span><span class="p">(</span><span class="n">slurm_config</span><span class="p">)</span>
+    <span class="n">filled_template</span> <span class="o">=</span> <span class="n">replace_in_template</span><span class="p">(</span>
+        <span class="n">filled_template</span><span class="p">,</span>
+        <span class="s2">&quot;SBATCH_PARAMETERS&quot;</span><span class="p">,</span>
+        <span class="n">slurm_preamble</span>
+    <span class="p">)</span>
+
+    <span class="c1"># fill the Launch script</span>
+    <span class="n">launch_script_path</span> <span class="o">=</span> <span class="n">internal_file_paths</span><span class="p">[</span><span class="s2">&quot;slurm_script_launch&quot;</span><span class="p">]</span>
+    <span class="n">filled_template</span> <span class="o">=</span> <span class="n">replace_in_template</span><span class="p">(</span>
+        <span class="n">filled_template</span><span class="p">,</span>
+        <span class="s2">&quot;LAUNCH_SCRIPT&quot;</span><span class="p">,</span>
+        <span class="n">launch_script_path</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">filled_template</span></div>
+
+
+
+<div class="viewcode-block" id="get_script_args_string">
+<a class="viewcode-back" href="../../rl_salamandra_alignment.html#rl_salamandra_alignment.generate_scripts.get_script_args_string">[documentos]</a>
+<span class="k">def</span> <span class="nf">get_script_args_string</span><span class="p">(</span><span class="n">script_args_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a python dictionary into a bash dictionary</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        script_args_dict (dict): python dictionary to convert</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: bash dictionary</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">script_args_string</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">--</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">script_args_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    <span class="p">]</span>
+    <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">script_args_string</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="generate_launch_script">
+<a class="viewcode-back" href="../../rl_salamandra_alignment.html#rl_salamandra_alignment.generate_scripts.generate_launch_script">[documentos]</a>
+<span class="k">def</span> <span class="nf">generate_launch_script</span><span class="p">(</span>
+        <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+        <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Write the script for launching a subexperiment, by filling out the script template.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        output_dir (str): root directory for the outputs of the experiment.</span>
+<span class="sd">        config (dict): execution config dict for subexperiment</span>
+<span class="sd">        id (str): Sub-experiment id</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: Text of the script for launching the subexperiment</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">filled_template</span> <span class="o">=</span> <span class="n">templates</span><span class="o">.</span><span class="n">get_launch_script_template</span><span class="p">()</span>
+    <span class="n">internal_file_paths</span> <span class="o">=</span> <span class="n">_internal_file_paths</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+    <span class="n">internal_dir_paths</span> <span class="o">=</span> <span class="n">_internal_dir_paths</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+
+    <span class="c1"># ============</span>
+    <span class="c1"># Environment variables</span>
+    <span class="c1"># ============</span>
+
+    <span class="n">environment_dict</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;environment&quot;</span><span class="p">])</span>
+    <span class="c1"># Automatically determine WANDB_DIR</span>
+    <span class="n">environment_dict</span><span class="p">[</span><span class="s2">&quot;WANDB_DIR&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">internal_dir_paths</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">]</span>
+
+    <span class="c1"># Automatically determine dir for training (checkpoints)</span>
+    <span class="n">environment_dict</span><span class="p">[</span><span class="s2">&quot;TRAINING_OUTPUT_DIR&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">internal_dir_paths</span><span class="p">[</span><span class="s2">&quot;training&quot;</span><span class="p">]</span>
+
+    <span class="c1"># venv</span>
+    <span class="n">environment_dict</span><span class="p">[</span><span class="s2">&quot;VENV_DIR&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;execution&quot;</span><span class="p">][</span><span class="s2">&quot;venv&quot;</span><span class="p">]</span>
+
+    <span class="c1"># Generate export statements:</span>
+    <span class="n">environment_variables</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="sa">f</span><span class="s1">&#39;export </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">=&quot;</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">environment_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    <span class="p">]</span>
+    <span class="n">environment_variables</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">environment_variables</span><span class="p">)</span>
+
+    <span class="n">filled_template</span> <span class="o">=</span> <span class="n">replace_in_template</span><span class="p">(</span>
+        <span class="n">filled_template</span><span class="p">,</span>
+        <span class="s2">&quot;ENVIRONMENT_VARIABLES&quot;</span><span class="p">,</span>
+        <span class="n">environment_variables</span>
+    <span class="p">)</span>
+
+    <span class="c1"># ============</span>
+    <span class="c1"># RL Dataset</span>
+    <span class="c1"># ============</span>
+    <span class="n">rl_dataset_path</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rl_script_args&quot;</span><span class="p">][</span><span class="s2">&quot;dataset_name&quot;</span><span class="p">]</span>
+    
+    <span class="c1"># The following line is to avoid using the original path to the RL dataset.</span>
+    <span class="c1"># Remember that the RL dataset is converted to a format that can be locally run in MN5, </span>
+    <span class="c1"># and this conversion happens before launching the fine-tuning</span>
+    <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rl_script_args&quot;</span><span class="p">][</span><span class="s2">&quot;dataset_name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;$RL_DATASET_PATH&quot;</span>
+
+    <span class="n">filled_template</span> <span class="o">=</span> <span class="n">replace_in_template</span><span class="p">(</span>
+        <span class="n">filled_template</span><span class="p">,</span>
+        <span class="s2">&quot;RL_DATASET_PATH&quot;</span><span class="p">,</span>
+        <span class="n">rl_dataset_path</span>
+    <span class="p">)</span>
+
+    <span class="c1"># ============</span>
+    <span class="c1"># Cache</span>
+    <span class="c1"># ============</span>
+
+    <span class="n">filled_template</span> <span class="o">=</span> <span class="n">replace_in_template</span><span class="p">(</span>
+        <span class="n">filled_template</span><span class="p">,</span>
+        <span class="s2">&quot;CACHE_DIR&quot;</span><span class="p">,</span>
+        <span class="n">internal_dir_paths</span><span class="p">[</span><span class="s2">&quot;cache&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="c1"># ============</span>
+    <span class="c1"># Distributed config</span>
+    <span class="c1"># ============</span>
+    <span class="n">ds_config_path</span> <span class="o">=</span> <span class="n">get_distributed_config_path</span><span class="p">(</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;execution&quot;</span><span class="p">][</span><span class="s2">&quot;distributed_config&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">filled_template</span> <span class="o">=</span> <span class="n">replace_in_template</span><span class="p">(</span>
+        <span class="n">filled_template</span><span class="p">,</span>
+        <span class="s2">&quot;DS_CONFIG_PATH&quot;</span><span class="p">,</span>
+        <span class="n">ds_config_path</span>
+    <span class="p">)</span>
+
+    <span class="c1"># ============</span>
+    <span class="c1"># RL script args</span>
+    <span class="c1"># ============</span>
+    <span class="n">rl_script_args</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;rl_script_args&quot;</span><span class="p">])</span>
+    <span class="n">filled_template</span> <span class="o">=</span> <span class="n">replace_in_template</span><span class="p">(</span>
+        <span class="n">filled_template</span><span class="p">,</span>
+        <span class="s2">&quot;RL_SCRIPT_ARGS&quot;</span><span class="p">,</span>
+        <span class="n">get_script_args_string</span><span class="p">(</span><span class="n">rl_script_args</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="c1"># ============</span>
+    <span class="c1"># RL config args</span>
+    <span class="c1"># ============</span>
+    <span class="n">rl_config_args</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;rl_config_args&quot;</span><span class="p">])</span>
+
+    <span class="c1"># Automatically determine logging dir for training</span>
+    <span class="n">rl_config_args</span><span class="p">[</span><span class="s2">&quot;logging_dir&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;$TRAINING_OUTPUT_DIR/logs&quot;</span>
+
+    <span class="c1"># This is very important for distributed distribution</span>
+    <span class="n">rl_config_args</span><span class="p">[</span><span class="s2">&quot;local_rank&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;$SLURM_LOCALID&quot;</span>
+
+    <span class="n">filled_template</span> <span class="o">=</span> <span class="n">replace_in_template</span><span class="p">(</span>
+        <span class="n">filled_template</span><span class="p">,</span>
+        <span class="s2">&quot;RL_CONFIG_ARGS&quot;</span><span class="p">,</span>
+        <span class="n">get_script_args_string</span><span class="p">(</span><span class="n">rl_config_args</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="c1"># ============</span>
+    <span class="c1"># Model args</span>
+    <span class="c1"># ============</span>
+    <span class="n">model_config_args</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;model_config_args&quot;</span><span class="p">])</span>
+
+    <span class="c1"># automatically determine training dir:</span>
+    <span class="n">model_config_args</span><span class="p">[</span><span class="s2">&quot;output_dir&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;$TRAINING_OUTPUT_DIR&quot;</span>
+
+    <span class="n">filled_template</span> <span class="o">=</span> <span class="n">replace_in_template</span><span class="p">(</span>
+        <span class="n">filled_template</span><span class="p">,</span>
+        <span class="s2">&quot;MODEL_CONFIG_ARGS&quot;</span><span class="p">,</span>
+        <span class="n">get_script_args_string</span><span class="p">(</span><span class="n">model_config_args</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="c1"># ============</span>
+    <span class="c1"># RL script path</span>
+    <span class="c1"># ============</span>
+
+    <span class="n">rl_script_path</span> <span class="o">=</span> <span class="n">get_script_path</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;execution&quot;</span><span class="p">][</span><span class="s2">&quot;algorithm&quot;</span><span class="p">])</span>
+
+    <span class="n">filled_template</span> <span class="o">=</span> <span class="n">replace_in_template</span><span class="p">(</span>
+        <span class="n">filled_template</span><span class="p">,</span>
+        <span class="s2">&quot;RL_SCRIPT_PATH&quot;</span><span class="p">,</span>
+        <span class="n">rl_script_path</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">filled_template</span></div>
+
+
+
+<div class="viewcode-block" id="generate_one_job">
+<a class="viewcode-back" href="../../rl_salamandra_alignment.html#rl_salamandra_alignment.generate_scripts.generate_one_job">[documentos]</a>
+<span class="k">def</span> <span class="nf">generate_one_job</span><span class="p">(</span><span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate the slurm scripts for a subexperiment</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        output_dir (str): root directory for the outputs of the experiment.</span>
+<span class="sd">        config (dict): execution config dict for subexperiment</span>
+<span class="sd">        id (str): Sub-experiment id</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple: paths to the distributed execution script and the launching script</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1"># Generate the content of the scripts</span>
+    <span class="n">launch_script_string</span> <span class="o">=</span> <span class="n">generate_launch_script</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+
+    <span class="n">distributed_run_script_string</span> <span class="o">=</span> <span class="n">generate_distributed_run_script</span><span class="p">(</span>
+        <span class="n">output_dir</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">,</span>
+        <span class="nb">id</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Save the content to file</span>
+    <span class="n">internal_file_paths</span> <span class="o">=</span> <span class="n">_internal_file_paths</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span>
+        <span class="n">internal_file_paths</span><span class="p">[</span><span class="s2">&quot;slrum_script_distrubuted_run&quot;</span><span class="p">],</span> <span class="s2">&quot;w&quot;</span>
+    <span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">distributed_run_script_string</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span>
+        <span class="n">internal_file_paths</span><span class="p">[</span><span class="s2">&quot;slurm_script_launch&quot;</span><span class="p">],</span> <span class="s2">&quot;w&quot;</span>
+    <span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">launch_script_string</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">internal_file_paths</span><span class="p">[</span><span class="s2">&quot;slrum_script_distrubuted_run&quot;</span><span class="p">],</span>
+        <span class="n">internal_file_paths</span><span class="p">[</span><span class="s2">&quot;slurm_script_launch&quot;</span><span class="p">]</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="generate_all_job_files">
+<a class="viewcode-back" href="../../rl_salamandra_alignment.html#rl_salamandra_alignment.generate_scripts.generate_all_job_files">[documentos]</a>
+<span class="k">def</span> <span class="nf">generate_all_job_files</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate the slurm scripts for an experiment</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        config (dict): execution config dict for experiment</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list[tuple]: for each subexperiment, paths to the distributed execution script and the launching script</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">output_dir</span> <span class="o">=</span> <span class="n">get_output_dir</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+    
+    <span class="c1"># build the tree structure</span>
+    <span class="n">setup_macro_output_dir_tree</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span>
+
+    <span class="c1"># Generate the configs for all the subexperiments</span>
+    <span class="n">unfolded_configs</span> <span class="o">=</span> <span class="n">unfold_dict</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+    
+    <span class="c1"># Give an ID to each subexperiment config</span>
+    <span class="n">unfolded_configs_with_id</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">cfg</span><span class="p">)</span>
+        <span class="k">for</span> <span class="nb">id</span><span class="p">,</span> <span class="n">cfg</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">unfolded_configs</span><span class="p">)</span>
+    <span class="p">]</span>
+    <span class="c1"># build the tree structure for each subexperiment</span>
+    <span class="k">for</span> <span class="nb">id</span><span class="p">,</span> <span class="n">cfg</span> <span class="ow">in</span> <span class="n">unfolded_configs_with_id</span><span class="p">:</span>
+        <span class="n">setup_micro_output_dir_tree</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">cfg</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+
+    <span class="c1"># Generate all scripts</span>
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="n">generate_one_job</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">cfg</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+        <span class="k">for</span> <span class="nb">id</span><span class="p">,</span> <span class="n">cfg</span> <span class="ow">in</span> <span class="n">unfolded_configs_with_id</span>
+    <span class="p">]</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Derechos de autor 2025, LangTech BSC.</p>
+  </div>
+
+  Compilado con <a href="https://www.sphinx-doc.org/">Sphinx</a> usando un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    proporcionado por <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>rl_salamandra_alignment.utils package &mdash; documentación de RL - Salamandra Alignment - 0.1.0</title>
+  <title>rl_salamandra_alignment.distributed_configs package &mdash; documentación de RL - Salamandra Alignment - 0.1.0</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
@@ -20,8 +20,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Índice" href="genindex.html" />
     <link rel="search" title="Búsqueda" href="search.html" />
-    <link rel="next" title="Contributing" href="contributing.html" />
-    <link rel="prev" title="rl_salamandra_alignment.trl_scripts package" href="rl_salamandra_alignment.trl_scripts.html" /> 
+    <link rel="next" title="rl_salamandra_alignment.templates package" href="rl_salamandra_alignment.templates.html" />
+    <link rel="prev" title="rl_salamandra_alignment package" href="rl_salamandra_alignment.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -51,10 +51,10 @@
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">rl_salamandra_alignment</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="rl_salamandra_alignment.html">rl_salamandra_alignment package</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="rl_salamandra_alignment.html#subpackages">Subpackages</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="rl_salamandra_alignment.distributed_configs.html">rl_salamandra_alignment.distributed_configs package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">rl_salamandra_alignment.distributed_configs package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="rl_salamandra_alignment.templates.html">rl_salamandra_alignment.templates package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="rl_salamandra_alignment.trl_scripts.html">rl_salamandra_alignment.trl_scripts package</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">rl_salamandra_alignment.utils package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rl_salamandra_alignment.utils.html">rl_salamandra_alignment.utils package</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="rl_salamandra_alignment.html#submodules">Submodules</a></li>
@@ -87,9 +87,9 @@
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="modules.html">rl_salamandra_alignment</a></li>
           <li class="breadcrumb-item"><a href="rl_salamandra_alignment.html">rl_salamandra_alignment package</a></li>
-      <li class="breadcrumb-item active">rl_salamandra_alignment.utils package</li>
+      <li class="breadcrumb-item active">rl_salamandra_alignment.distributed_configs package</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/rl_salamandra_alignment.utils.rst.txt" rel="nofollow"> Ver código fuente de la página</a>
+            <a href="_sources/rl_salamandra_alignment.distributed_configs.rst.txt" rel="nofollow"> Ver código fuente de la página</a>
       </li>
   </ul>
   <hr/>
@@ -97,66 +97,28 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="rl-salamandra-alignment-utils-package">
-<h1>rl_salamandra_alignment.utils package<a class="headerlink" href="#rl-salamandra-alignment-utils-package" title="Link to this heading"></a></h1>
-<section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
-</section>
-<section id="module-rl_salamandra_alignment.utils.general">
-<span id="rl-salamandra-alignment-utils-general-module"></span><h2>rl_salamandra_alignment.utils.general module<a class="headerlink" href="#module-rl_salamandra_alignment.utils.general" title="Link to this heading"></a></h2>
+  <section id="rl-salamandra-alignment-distributed-configs-package">
+<h1>rl_salamandra_alignment.distributed_configs package<a class="headerlink" href="#rl-salamandra-alignment-distributed-configs-package" title="Link to this heading"></a></h1>
+<section id="module-rl_salamandra_alignment.distributed_configs">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-rl_salamandra_alignment.distributed_configs" title="Link to this heading"></a></h2>
+<p>Config files for distributed computing</p>
 <dl class="py function">
-<dt class="sig sig-object py" id="rl_salamandra_alignment.utils.general.dict_sort">
-<span class="sig-prename descclassname"><span class="pre">rl_salamandra_alignment.utils.general.</span></span><span class="sig-name descname"><span class="pre">dict_sort</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dict_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rl_salamandra_alignment/utils/general.html#dict_sort"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#rl_salamandra_alignment.utils.general.dict_sort" title="Link to this definition"></a></dt>
-<dd><p>Sorts a list of dictionaries by their string versions</p>
+<dt class="sig sig-object py" id="rl_salamandra_alignment.distributed_configs.get_distributed_config_path">
+<span class="sig-prename descclassname"><span class="pre">rl_salamandra_alignment.distributed_configs.</span></span><span class="sig-name descname"><span class="pre">get_distributed_config_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rl_salamandra_alignment/distributed_configs.html#get_distributed_config_path"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#rl_salamandra_alignment.distributed_configs.get_distributed_config_path" title="Link to this definition"></a></dt>
+<dd><p>Get the absolute path to a config file for distributed computing</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parámetros<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>dict_list</strong> (<em>list</em>) – list of dictionaries</p>
+<dd class="field-odd"><p><strong>config_name</strong> (<em>DistributedConfigs</em>) – Name of setup for distributed computing</p>
 </dd>
 <dt class="field-even">Devuelve<span class="colon">:</span></dt>
-<dd class="field-even"><p>sorted list of dictionaries</p>
+<dd class="field-even"><p>Path to config file</p>
 </dd>
 <dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list</p>
+<dd class="field-odd"><p>str</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="rl_salamandra_alignment.utils.general.try_load_config">
-<span class="sig-prename descclassname"><span class="pre">rl_salamandra_alignment.utils.general.</span></span><span class="sig-name descname"><span class="pre">try_load_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rl_salamandra_alignment/utils/general.html#try_load_config"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#rl_salamandra_alignment.utils.general.try_load_config" title="Link to this definition"></a></dt>
-<dd><p>Load a YAML configuration file.</p>
-<p>Parameters:
-config_file (str): Path to the configuration file.</p>
-<p>Returns:
-dict: Configuration dictionary.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></span></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="rl_salamandra_alignment.utils.general.unfold_dict">
-<span class="sig-prename descclassname"><span class="pre">rl_salamandra_alignment.utils.general.</span></span><span class="sig-name descname"><span class="pre">unfold_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rl_salamandra_alignment/utils/general.html#unfold_dict"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#rl_salamandra_alignment.utils.general.unfold_dict" title="Link to this definition"></a></dt>
-<dd><p>Recursively unfolds a dictionary into multiple dictionaries if values are lists.
-For nested dictionaries, the unfolding continues recursively.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>input_dict</strong> (<em>dict</em>) – The input dictionary to unfold.</p>
-</dd>
-<dt class="field-even">Devuelve<span class="colon">:</span></dt>
-<dd class="field-even"><p>A list of dictionaries representing all combinations of the input dictionary’s values.</p>
-</dd>
-<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
-<section id="module-rl_salamandra_alignment.utils">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-rl_salamandra_alignment.utils" title="Link to this heading"></a></h2>
 </section>
 </section>
 
@@ -164,8 +126,8 @@ For nested dictionaries, the unfolding continues recursively.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pie de página">
-        <a href="rl_salamandra_alignment.trl_scripts.html" class="btn btn-neutral float-left" title="rl_salamandra_alignment.trl_scripts package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Anterior</a>
-        <a href="contributing.html" class="btn btn-neutral float-right" title="Contributing" accesskey="n" rel="next">Siguiente <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="rl_salamandra_alignment.html" class="btn btn-neutral float-left" title="rl_salamandra_alignment package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Anterior</a>
+        <a href="rl_salamandra_alignment.templates.html" class="btn btn-neutral float-right" title="rl_salamandra_alignment.templates package" accesskey="n" rel="next">Siguiente <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

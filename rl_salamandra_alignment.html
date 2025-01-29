@@ -20,7 +20,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Índice" href="genindex.html" />
     <link rel="search" title="Búsqueda" href="search.html" />
-    <link rel="next" title="rl_salamandra_alignment.utils package" href="rl_salamandra_alignment.utils.html" />
+    <link rel="next" title="rl_salamandra_alignment.distributed_configs package" href="rl_salamandra_alignment.distributed_configs.html" />
     <link rel="prev" title="rl_salamandra_alignment" href="modules.html" /> 
 </head>
 
@@ -51,6 +51,9 @@
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">rl_salamandra_alignment</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">rl_salamandra_alignment package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rl_salamandra_alignment.distributed_configs.html">rl_salamandra_alignment.distributed_configs package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rl_salamandra_alignment.templates.html">rl_salamandra_alignment.templates package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rl_salamandra_alignment.trl_scripts.html">rl_salamandra_alignment.trl_scripts package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="rl_salamandra_alignment.utils.html">rl_salamandra_alignment.utils package</a></li>
 </ul>
 </li>
@@ -59,7 +62,20 @@
 <li class="toctree-l4"><a class="reference internal" href="#rl_salamandra_alignment.cli.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#rl-salamandra-alignment-rl-salamandra-alignment-module">rl_salamandra_alignment.rl_salamandra_alignment module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rl-salamandra-alignment-convert-dataset-module">rl_salamandra_alignment.convert_dataset module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-rl_salamandra_alignment.generate_scripts">rl_salamandra_alignment.generate_scripts module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#rl_salamandra_alignment.generate_scripts.generate_all_job_files"><code class="docutils literal notranslate"><span class="pre">generate_all_job_files()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#rl_salamandra_alignment.generate_scripts.generate_distributed_run_script"><code class="docutils literal notranslate"><span class="pre">generate_distributed_run_script()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#rl_salamandra_alignment.generate_scripts.generate_launch_script"><code class="docutils literal notranslate"><span class="pre">generate_launch_script()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#rl_salamandra_alignment.generate_scripts.generate_one_job"><code class="docutils literal notranslate"><span class="pre">generate_one_job()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#rl_salamandra_alignment.generate_scripts.generate_slurm_preamble"><code class="docutils literal notranslate"><span class="pre">generate_slurm_preamble()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#rl_salamandra_alignment.generate_scripts.get_output_dir"><code class="docutils literal notranslate"><span class="pre">get_output_dir()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#rl_salamandra_alignment.generate_scripts.get_script_args_string"><code class="docutils literal notranslate"><span class="pre">get_script_args_string()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#rl_salamandra_alignment.generate_scripts.replace_in_template"><code class="docutils literal notranslate"><span class="pre">replace_in_template()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#rl_salamandra_alignment.generate_scripts.setup_macro_output_dir_tree"><code class="docutils literal notranslate"><span class="pre">setup_macro_output_dir_tree()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#rl_salamandra_alignment.generate_scripts.setup_micro_output_dir_tree"><code class="docutils literal notranslate"><span class="pre">setup_micro_output_dir_tree()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#module-rl_salamandra_alignment">Module contents</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#rl_salamandra_alignment.setup_logging"><code class="docutils literal notranslate"><span class="pre">setup_logging()</span></code></a></li>
 </ul>
@@ -104,6 +120,46 @@
 <h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="rl_salamandra_alignment.distributed_configs.html">rl_salamandra_alignment.distributed_configs package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="rl_salamandra_alignment.distributed_configs.html#module-rl_salamandra_alignment.distributed_configs">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rl_salamandra_alignment.distributed_configs.html#rl_salamandra_alignment.distributed_configs.get_distributed_config_path"><code class="docutils literal notranslate"><span class="pre">get_distributed_config_path()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="rl_salamandra_alignment.templates.html">rl_salamandra_alignment.templates package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="rl_salamandra_alignment.templates.html#module-rl_salamandra_alignment.templates">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rl_salamandra_alignment.templates.html#rl_salamandra_alignment.templates.get_distributed_run_template"><code class="docutils literal notranslate"><span class="pre">get_distributed_run_template()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rl_salamandra_alignment.templates.html#rl_salamandra_alignment.templates.get_launch_script_template"><code class="docutils literal notranslate"><span class="pre">get_launch_script_template()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="rl_salamandra_alignment.trl_scripts.html">rl_salamandra_alignment.trl_scripts package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="rl_salamandra_alignment.trl_scripts.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rl_salamandra_alignment.trl_scripts.html#rl-salamandra-alignment-trl-scripts-alignprop-module">rl_salamandra_alignment.trl_scripts.alignprop module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rl_salamandra_alignment.trl_scripts.html#rl-salamandra-alignment-trl-scripts-bco-module">rl_salamandra_alignment.trl_scripts.bco module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rl_salamandra_alignment.trl_scripts.html#rl-salamandra-alignment-trl-scripts-chat-module">rl_salamandra_alignment.trl_scripts.chat module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rl_salamandra_alignment.trl_scripts.html#rl-salamandra-alignment-trl-scripts-cpo-module">rl_salamandra_alignment.trl_scripts.cpo module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rl_salamandra_alignment.trl_scripts.html#rl-salamandra-alignment-trl-scripts-ddpo-module">rl_salamandra_alignment.trl_scripts.ddpo module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rl_salamandra_alignment.trl_scripts.html#rl-salamandra-alignment-trl-scripts-dpo-module">rl_salamandra_alignment.trl_scripts.dpo module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rl_salamandra_alignment.trl_scripts.html#rl-salamandra-alignment-trl-scripts-dpo-online-module">rl_salamandra_alignment.trl_scripts.dpo_online module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rl_salamandra_alignment.trl_scripts.html#rl-salamandra-alignment-trl-scripts-dpo-vlm-module">rl_salamandra_alignment.trl_scripts.dpo_vlm module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rl_salamandra_alignment.trl_scripts.html#rl-salamandra-alignment-trl-scripts-gkd-module">rl_salamandra_alignment.trl_scripts.gkd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rl_salamandra_alignment.trl_scripts.html#rl-salamandra-alignment-trl-scripts-kto-module">rl_salamandra_alignment.trl_scripts.kto module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rl_salamandra_alignment.trl_scripts.html#rl-salamandra-alignment-trl-scripts-nash-md-module">rl_salamandra_alignment.trl_scripts.nash_md module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rl_salamandra_alignment.trl_scripts.html#rl-salamandra-alignment-trl-scripts-orpo-module">rl_salamandra_alignment.trl_scripts.orpo module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rl_salamandra_alignment.trl_scripts.html#rl-salamandra-alignment-trl-scripts-reward-modeling-module">rl_salamandra_alignment.trl_scripts.reward_modeling module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rl_salamandra_alignment.trl_scripts.html#rl-salamandra-alignment-trl-scripts-sft-module">rl_salamandra_alignment.trl_scripts.sft module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rl_salamandra_alignment.trl_scripts.html#rl-salamandra-alignment-trl-scripts-sft-video-llm-module">rl_salamandra_alignment.trl_scripts.sft_video_llm module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rl_salamandra_alignment.trl_scripts.html#rl-salamandra-alignment-trl-scripts-sft-vlm-module">rl_salamandra_alignment.trl_scripts.sft_vlm module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rl_salamandra_alignment.trl_scripts.html#rl-salamandra-alignment-trl-scripts-xpo-module">rl_salamandra_alignment.trl_scripts.xpo module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rl_salamandra_alignment.trl_scripts.html#module-rl_salamandra_alignment.trl_scripts">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rl_salamandra_alignment.trl_scripts.html#rl_salamandra_alignment.trl_scripts.get_script_path"><code class="docutils literal notranslate"><span class="pre">get_script_path()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="rl_salamandra_alignment.utils.html">rl_salamandra_alignment.utils package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="rl_salamandra_alignment.utils.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rl_salamandra_alignment.utils.html#module-rl_salamandra_alignment.utils.general">rl_salamandra_alignment.utils.general module</a><ul>
@@ -131,8 +187,198 @@
 </dd></dl>
 
 </section>
-<section id="rl-salamandra-alignment-rl-salamandra-alignment-module">
-<h2>rl_salamandra_alignment.rl_salamandra_alignment module<a class="headerlink" href="#rl-salamandra-alignment-rl-salamandra-alignment-module" title="Link to this heading"></a></h2>
+<section id="rl-salamandra-alignment-convert-dataset-module">
+<h2>rl_salamandra_alignment.convert_dataset module<a class="headerlink" href="#rl-salamandra-alignment-convert-dataset-module" title="Link to this heading"></a></h2>
+</section>
+<section id="module-rl_salamandra_alignment.generate_scripts">
+<span id="rl-salamandra-alignment-generate-scripts-module"></span><h2>rl_salamandra_alignment.generate_scripts module<a class="headerlink" href="#module-rl_salamandra_alignment.generate_scripts" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="rl_salamandra_alignment.generate_scripts.generate_all_job_files">
+<span class="sig-prename descclassname"><span class="pre">rl_salamandra_alignment.generate_scripts.</span></span><span class="sig-name descname"><span class="pre">generate_all_job_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rl_salamandra_alignment/generate_scripts.html#generate_all_job_files"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#rl_salamandra_alignment.generate_scripts.generate_all_job_files" title="Link to this definition"></a></dt>
+<dd><p>Generate the slurm scripts for an experiment</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>config</strong> (<em>dict</em>) – execution config dict for experiment</p>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p>for each subexperiment, paths to the distributed execution script and the launching script</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[tuple]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rl_salamandra_alignment.generate_scripts.generate_distributed_run_script">
+<span class="sig-prename descclassname"><span class="pre">rl_salamandra_alignment.generate_scripts.</span></span><span class="sig-name descname"><span class="pre">generate_distributed_run_script</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rl_salamandra_alignment/generate_scripts.html#generate_distributed_run_script"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#rl_salamandra_alignment.generate_scripts.generate_distributed_run_script" title="Link to this definition"></a></dt>
+<dd><p>Write the script for distributed execution of a subexperiment, by filling out the script template.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>output_dir</strong> (<em>str</em>) – root directory for the outputs of the experiment.</p></li>
+<li><p><strong>config</strong> (<em>dict</em>) – execution config dict for subexperiment</p></li>
+<li><p><strong>id</strong> (<em>str</em>) – Sub-experiment id</p></li>
+</ul>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p>Text of the script for distributed execution</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rl_salamandra_alignment.generate_scripts.generate_launch_script">
+<span class="sig-prename descclassname"><span class="pre">rl_salamandra_alignment.generate_scripts.</span></span><span class="sig-name descname"><span class="pre">generate_launch_script</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rl_salamandra_alignment/generate_scripts.html#generate_launch_script"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#rl_salamandra_alignment.generate_scripts.generate_launch_script" title="Link to this definition"></a></dt>
+<dd><p>Write the script for launching a subexperiment, by filling out the script template.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>output_dir</strong> (<em>str</em>) – root directory for the outputs of the experiment.</p></li>
+<li><p><strong>config</strong> (<em>dict</em>) – execution config dict for subexperiment</p></li>
+<li><p><strong>id</strong> (<em>str</em>) – Sub-experiment id</p></li>
+</ul>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p>Text of the script for launching the subexperiment</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rl_salamandra_alignment.generate_scripts.generate_one_job">
+<span class="sig-prename descclassname"><span class="pre">rl_salamandra_alignment.generate_scripts.</span></span><span class="sig-name descname"><span class="pre">generate_one_job</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rl_salamandra_alignment/generate_scripts.html#generate_one_job"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#rl_salamandra_alignment.generate_scripts.generate_one_job" title="Link to this definition"></a></dt>
+<dd><p>Generate the slurm scripts for a subexperiment</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>output_dir</strong> (<em>str</em>) – root directory for the outputs of the experiment.</p></li>
+<li><p><strong>config</strong> (<em>dict</em>) – execution config dict for subexperiment</p></li>
+<li><p><strong>id</strong> (<em>str</em>) – Sub-experiment id</p></li>
+</ul>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p>paths to the distributed execution script and the launching script</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rl_salamandra_alignment.generate_scripts.generate_slurm_preamble">
+<span class="sig-prename descclassname"><span class="pre">rl_salamandra_alignment.generate_scripts.</span></span><span class="sig-name descname"><span class="pre">generate_slurm_preamble</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sbatch_args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rl_salamandra_alignment/generate_scripts.html#generate_slurm_preamble"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#rl_salamandra_alignment.generate_scripts.generate_slurm_preamble" title="Link to this definition"></a></dt>
+<dd><p>Generate the preamble for a slurm job.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sbatch_args</strong> (<em>dict</em>) – Arguments for Sbatch</p>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p>Preamble with all #SBATCHs filled</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rl_salamandra_alignment.generate_scripts.get_output_dir">
+<span class="sig-prename descclassname"><span class="pre">rl_salamandra_alignment.generate_scripts.</span></span><span class="sig-name descname"><span class="pre">get_output_dir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rl_salamandra_alignment/generate_scripts.html#get_output_dir"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#rl_salamandra_alignment.generate_scripts.get_output_dir" title="Link to this definition"></a></dt>
+<dd><p>Extract the field “output directory” from a config dict, making sure it is a string</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>config</strong> (<em>dict</em>) – execution config dict for experiment</p>
+</dd>
+<dt class="field-even">Muestra<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Raised if the value is not a string (e.g. a list).</p>
+</dd>
+<dt class="field-odd">Devuelve<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Path to the output directory</p>
+</dd>
+<dt class="field-even">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rl_salamandra_alignment.generate_scripts.get_script_args_string">
+<span class="sig-prename descclassname"><span class="pre">rl_salamandra_alignment.generate_scripts.</span></span><span class="sig-name descname"><span class="pre">get_script_args_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">script_args_dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rl_salamandra_alignment/generate_scripts.html#get_script_args_string"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#rl_salamandra_alignment.generate_scripts.get_script_args_string" title="Link to this definition"></a></dt>
+<dd><p>Convert a python dictionary into a bash dictionary</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>script_args_dict</strong> (<em>dict</em>) – python dictionary to convert</p>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p>bash dictionary</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rl_salamandra_alignment.generate_scripts.replace_in_template">
+<span class="sig-prename descclassname"><span class="pre">rl_salamandra_alignment.generate_scripts.</span></span><span class="sig-name descname"><span class="pre">replace_in_template</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text_template</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable_value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rl_salamandra_alignment/generate_scripts.html#replace_in_template"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#rl_salamandra_alignment.generate_scripts.replace_in_template" title="Link to this definition"></a></dt>
+<dd><p>Inside a template, replaces a variable name «{{MY_VAR}}» by a value</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>text_template</strong> (<em>str</em>) – Template</p></li>
+<li><p><strong>variable_name</strong> (<em>str</em>) – Name of the variable in all caps.</p></li>
+<li><p><strong>variable_value</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>int</em><em>, </em><em>float</em><em>]</em>) – Value of the variable</p></li>
+</ul>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p>template with the filled slot</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rl_salamandra_alignment.generate_scripts.setup_macro_output_dir_tree">
+<span class="sig-prename descclassname"><span class="pre">rl_salamandra_alignment.generate_scripts.</span></span><span class="sig-name descname"><span class="pre">setup_macro_output_dir_tree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rl_salamandra_alignment/generate_scripts.html#setup_macro_output_dir_tree"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#rl_salamandra_alignment.generate_scripts.setup_macro_output_dir_tree" title="Link to this definition"></a></dt>
+<dd><p>Construct the directory tree for running an experiment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>output_dir</strong> (<em>str</em>) – root directory for the outputs of the experiment.</p>
+</dd>
+<dt class="field-even">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rl_salamandra_alignment.generate_scripts.setup_micro_output_dir_tree">
+<span class="sig-prename descclassname"><span class="pre">rl_salamandra_alignment.generate_scripts.</span></span><span class="sig-name descname"><span class="pre">setup_micro_output_dir_tree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rl_salamandra_alignment/generate_scripts.html#setup_micro_output_dir_tree"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#rl_salamandra_alignment.generate_scripts.setup_micro_output_dir_tree" title="Link to this definition"></a></dt>
+<dd><p>Construct the directory tree for running a subexperiment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>output_dir</strong> (<em>str</em>) – root directory for the outputs of the experiment.</p></li>
+<li><p><strong>config</strong> (<em>dict</em>) – execution config dict for subexperiment</p></li>
+<li><p><strong>id</strong> (<em>str</em>) – Sub-experiment id</p></li>
+</ul>
+</dd>
+<dt class="field-even">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="module-rl_salamandra_alignment">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-rl_salamandra_alignment" title="Link to this heading"></a></h2>
@@ -151,7 +397,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pie de página">
         <a href="modules.html" class="btn btn-neutral float-left" title="rl_salamandra_alignment" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Anterior</a>
-        <a href="rl_salamandra_alignment.utils.html" class="btn btn-neutral float-right" title="rl_salamandra_alignment.utils package" accesskey="n" rel="next">Siguiente <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="rl_salamandra_alignment.distributed_configs.html" class="btn btn-neutral float-right" title="rl_salamandra_alignment.distributed_configs package" accesskey="n" rel="next">Siguiente <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
