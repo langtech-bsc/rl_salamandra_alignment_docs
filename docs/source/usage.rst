@@ -86,6 +86,7 @@ For example, the following `config.yaml` for one experiment executes 12 experime
 .. code-block:: yaml
     :caption: Setting up subexperiments
     :name: example_subexperiments_config
+    
     ...
     execution:
         algorithm: ["dpo", "kto"]
