@@ -157,7 +157,7 @@ This will create the training and evaluation jobs for SLURM, but it will **only*
 Subexperiments
 ---------------
 
-To experiment with different configurations of values, you can use **lists** in your `config.yaml` file.
+To experiment with different configurations of values, you can use **lists** in your ``config.yaml`` file.
 
 For example, the following ``config.yaml`` for one experiment executes 12 subexperiments: 
 
