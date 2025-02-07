@@ -38,7 +38,7 @@ you through the process.
 Experimental Release
 ------------
 
-The sources for RL - Salamandra Alignment can be downloaded from the `Github repo`_.
+The sources for RL - Salamandra Alignment can be downloaded from the `Github repo <https://github.com/langtech-bsc/rl_salamandra_alignment>`.
 
 After preparing a new virtual environment (explained above), you can clone the public repository:
 

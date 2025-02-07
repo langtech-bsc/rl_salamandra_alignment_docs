@@ -2,25 +2,30 @@
 Usage
 =====
 
-After :doc:`installing <installation>`, you will be able to run RL experiments using the package.
+After :doc:`installing <installation>`, you will be able to run Reinforcement Learning experiments using the package.
 
 ----------
 Experiment
 ----------
 
 An experiment consists of two parts:
-    - Training
-    - Evaluation (optional)
+
+    - Training your model using a Reinforcement Learning algorithm
+    - (Optional) Evaluating the resulting model
         - Harness Evaluation
         - Local Evaluation
 
-All the configurations and hyperparameters for an experiment must be specified in a **configuration file** in YAML. 
+.. important::
+    All the configurations and hyperparameters for an experiment must be specified in a **configuration file** in YAML. 
 
-For evaluation, we use the Evaluation Harness, and, for tasks not implemented in the Evaluation Harness, we use custom scripts (This is what we call "Local Evaluation").
+When you run an experiment, training jobs and evaluation jobs are created and submitted to MareNostrum5 using SLURM. 
 
-All evaluation jobs are submited to MareNostrum5 with dependencies to training jobs.
+For evaluation, some tasks are implemented in the Evaluation Harness. For those which are not, we use custom scripts (This is what we call "Local Evaluation").
 
-Note that evaluation is optional: if you do not specify an ``"evaluation"`` field in your `config.yaml` file, then only training will happen.
+All evaluation jobs are submited to MareNostrum5 with dependencies to their respective training jobs.
+
+.. note::
+    Note that evaluation is optional: if you do not specify an ``"evaluation"`` field in your `config.yaml` file, then only training will happen.
 
 
 ------------------------------------
@@ -34,10 +39,10 @@ First, you will need a configuration file in YAML for your experiment (The value
     :name: example_yaml_config
 
     execution:
-        algorithm: "dpo"
+        algorithm: "dpo" # Reinforcement Learning Algorithm
         venv: "<path_to_your_venv>"
         output_dir: "<path_to_your_output_dir>"
-        distributed_config: "DSZero3Offload"
+        distributed_config: "DSZero3Offload" # For distributed training in MN5
 
     slurm:
         job-name: "<your_slurm_job_name>"
@@ -123,7 +128,7 @@ You can use your ``config.yaml`` file to run an experiment, using the :ref:`CLI 
 
     $ rl_salamandra_mn5 config.yaml
 
-This will generate **and** submit slurm jobs to MareNostrum 5, you can find them in your ``output_dir``.
+This will generate **and** submit SLURM jobs to MareNostrum 5, you can find them in your ``output_dir``.
 
 Debugging
 ==========
@@ -134,7 +139,7 @@ For debugging, use the ``--debug`` flag:
 
     $ rl_salamandra_mn5 config.yaml --debug
 
-In debugging mode, slurm scripts will be generated but not submitted.
+In debugging mode, SLURM scripts will be generated but not submitted.
 
 Skipping evaluation
 ====================
@@ -146,7 +151,7 @@ If you only want to train but not evaluate nmodels, you can use the ``--no_evalu
     $ rl_salamandra_mn5 config.yaml --no_evaluation
 
 
-This will create the training and evaluation jobs for slurm, but it will **only** submit the training jobs. This may be useful when the evaluation queue is long, or when you want to make a quick experiment.
+This will create the training and evaluation jobs for SLURM, but it will **only** submit the training jobs. This may be useful when the evaluation queue is long, or when you want to make a quick experiment.
 
 ---------------
 Subexperiments
@@ -180,6 +185,8 @@ Note that both hyphens (``-``) and square brackes (``[]``) work for writing list
         learning_rate: [5.0e-6, 1.0e-5, 1.0e-6]
     ...
 
-Note that any of the values in the configuration can be a list, **except** ``output_dir`` under ``execution``. The ``output_dir`` must always be an absolute path. 
+
+.. warning:: 
+    Note that any of the values in the configuration can be a list, **except** ``output_dir`` under ``execution``. The ``output_dir`` must always be an absolute path. 
 
 Furthermore, for a given configuration file, all subexperiments generated from it share the same ``evaluation`` field, which will **not** be unfolded. This means that you can specify lists inside the ``evaluation`` field (for example, lists of evaluation tasks), and doing so will not create more subexperiments. 
