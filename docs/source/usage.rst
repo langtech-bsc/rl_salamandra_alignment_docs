@@ -4,10 +4,30 @@ Usage
 
 After :doc:`installing <installation>`, you will be able to run RL experiments using the package.
 
-Configuration file for Experiment
----------------------------------
+----------
+Experiment
+----------
 
-First, you will need a configuration file in YAML for your experiment:
+An experiment consists of two parts:
+    - Training
+    - Evaluation (optional)
+        - Harness Evaluation
+        - Local Evaluation
+
+All the configurations and hyperparameters for an experiment must be specified in a **configuration file** in YAML. 
+
+For evaluation, we use the Evaluation Harness, and, for tasks not implemented in the Evaluation Harness, we use custom scripts (This is what we call "Local Evaluation").
+
+All evaluation jobs are submited to MareNostrum5 with dependencies to training jobs.
+
+Note that evaluation is optional: if you do not specify an ``"evaluation"`` field in your `config.yaml` file, then only training will happen.
+
+
+------------------------------------
+Configuration file for an Experiment
+------------------------------------
+
+First, you will need a configuration file in YAML for your experiment (The values marked with ``None`` are computed internally by the package):
 
 .. code-block:: yaml
     :caption: Example YAML configuration file
@@ -73,38 +93,28 @@ First, you will need a configuration file in YAML for your experiment:
         WANDB_NAME: "test_alignment"
         # WANDB_DIR: None
 
+    # Evaluation is optional
+    evaluation:
+    "harness_tasks":
+        - "flores_en-es"
+        - "flores_es-ca"
+        - "wnli_es"
+        - "xlsum_es"
+    "harness_slurm":
+    # job name, logs, and gpus are automatically computed
+        qos: "acc_bscls"
+        account: "bsc88"
+        nodes: 2
+        time: "12:00:00"
+        # job-name: None
+        # output: None
+        # error: None
+        # cpus-per-task: None # 
+        # gres : None  # "gpu:4"
 
-The values marked with ``None`` are computed internally by the package.
 
-
-Subexperiments
---------------
-
-To experiment with different configurations of values, you can use lists in your `config.yaml` file.
-
-For example, the following ``config.yaml`` for one experiment executes 12 experiments: 
-
-- 6 runs of DPO on 2 models with 3 learning rates, and
-- other 6 runs for KTO
-
-.. code-block:: yaml
-    :caption: Setting up subexperiments
-    :name: example_subexperiments_config
-
-    ...
-    execution:
-        algorithm: ["dpo", "kto"]
-    ...
-    model_config_args:
-        model_name_or_path: ["model_1", "model_2"]
-    ...
-    rl_config_args:
-        learning_rate: [5.0e-6, 1.0e-5, 1.0e-6]
-    ...
-
-Note that any of the values can be a list, **except** ``output_dir`` under ``execution``. The ``output_dir`` must always be an absolute path. 
-
-Generating Job scripts
+----------------------
+Running an experiment
 ----------------------
 
 You can use your ``config.yaml`` file to run an experiment, using the :ref:`CLI <rl-salamandra-alignment.cli>`:
@@ -113,5 +123,63 @@ You can use your ``config.yaml`` file to run an experiment, using the :ref:`CLI 
 
     $ rl_salamandra_mn5 config.yaml
 
-This will generate slurm jobs in your ``output_dir``, which you can submit to MareNostrum 5.
+This will generate **and** submit slurm jobs to MareNostrum 5, you can find them in your ``output_dir``.
 
+Debugging
+==========
+
+For debugging, use the ``--debug`` flag:
+
+.. code-block:: console
+
+    $ rl_salamandra_mn5 config.yaml --debug
+
+In debugging mode, slurm scripts will be generated but not submitted.
+
+Skipping evaluation
+====================
+
+If you only want to train but not evaluate nmodels, you can use the ``--no_evaluation`` flag
+
+.. code-block:: console
+
+    $ rl_salamandra_mn5 config.yaml --no_evaluation
+
+
+This will create the training and evaluation jobs for slurm, but it will **only** submit the training jobs. This may be useful when the evaluation queue is long, or when you want to make a quick experiment.
+
+---------------
+Subexperiments
+---------------
+
+To experiment with different configurations of values, you can use **lists** in your `config.yaml` file.
+
+For example, the following ``config.yaml`` for one experiment executes 12 subexperiments: 
+
+- 6 runs of DPO: on 2 models with 3 learning rates, and
+- 6 runs of KTO: on the same 2 models with the same 3 learning rates
+
+Note that both hyphens (``-``) and square brackes (``[]``) work for writing lists in YAML.
+
+.. code-block:: yaml
+    :caption: Setting up subexperiments
+    :name: example_subexperiments_config
+
+    ...
+    execution:
+        algorithm: 
+            - "dpo"
+            - "kto"
+    ...
+    model_config_args:
+        model_name_or_path: 
+            - "model_1"
+            - "model_2"
+    ...
+    rl_config_args:
+        learning_rate: [5.0e-6, 1.0e-5, 1.0e-6]
+    ...
+
+Note that any of the values in the configuration can be a list, **except** ``output_dir`` under ``execution``. The ``output_dir`` must always be an absolute path. 
+
+Furthermore, for a given configuration file, all subexperiments generated from it share the same ``evaluation`` field, which will **not** be unfolded. This means that you can specify lists inside the ``evaluation`` field (for example, lists of evaluation tasks), and doing so will not create more subexperiments. 
