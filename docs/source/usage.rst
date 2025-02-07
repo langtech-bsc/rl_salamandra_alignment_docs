@@ -128,7 +128,7 @@ You can use your ``config.yaml`` file to run an experiment, using the :ref:`CLI 
 
     $ rl_salamandra_mn5 config.yaml
 
-This will generate **and** submit SLURM jobs to MareNostrum 5, you can find them in your ``output_dir``.
+This will generate **and** submit SLURM jobs to MareNostrum 5, you can find the trained models, slurm scripts, slurm logs, and evaluation results in your ``output_dir``.
 
 Debugging
 ==========
