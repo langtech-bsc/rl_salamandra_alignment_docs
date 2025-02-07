@@ -155,6 +155,50 @@ For nested dictionaries, the unfolding continues recursively.</p>
 </dd></dl>
 
 </section>
+<section id="module-rl_salamandra_alignment.utils.job_submission">
+<span id="rl-salamandra-alignment-utils-job-submission-module"></span><h2>rl_salamandra_alignment.utils.job_submission module<a class="headerlink" href="#module-rl_salamandra_alignment.utils.job_submission" title="Link to this heading"></a></h2>
+<p>Utilities for submitting jobs with SLURM</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="rl_salamandra_alignment.utils.job_submission.submit_job">
+<span class="sig-prename descclassname"><span class="pre">rl_salamandra_alignment.utils.job_submission.</span></span><span class="sig-name descname"><span class="pre">submit_job</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">job_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dependency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rl_salamandra_alignment/utils/job_submission.html#submit_job"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#rl_salamandra_alignment.utils.job_submission.submit_job" title="Link to this definition"></a></dt>
+<dd><p>Function to submit a job and return its job ID
+:type job_file: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>
+:param job_file: Path to Slurm job file
+:type job_file: str
+:type dependency: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>
+:param dependency: job id of dependency for submitting a new job. Defaults to None.
+:type dependency: str, optional</p>
+<dl class="field-list simple">
+<dt class="field-odd">Devuelve<span class="colon">:</span></dt>
+<dd class="field-odd"><p>job id of submitted job</p>
+</dd>
+<dt class="field-even">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rl_salamandra_alignment.utils.job_submission.submit_job_with_retries">
+<span class="sig-prename descclassname"><span class="pre">rl_salamandra_alignment.utils.job_submission.</span></span><span class="sig-name descname"><span class="pre">submit_job_with_retries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">job_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_retries</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rl_salamandra_alignment/utils/job_submission.html#submit_job_with_retries"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#rl_salamandra_alignment.utils.job_submission.submit_job_with_retries" title="Link to this definition"></a></dt>
+<dd><p>Submit a slurm job n_retries times with dependencies</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>job_file</strong> (<em>str</em>) – Path to Slurm job file</p></li>
+<li><p><strong>n_retries</strong> (<em>int</em>) – number of retries</p></li>
+</ul>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p>job id of last submitted job</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 <section id="module-rl_salamandra_alignment.utils">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-rl_salamandra_alignment.utils" title="Link to this heading"></a></h2>
 </section>

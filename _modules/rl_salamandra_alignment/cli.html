@@ -79,9 +79,15 @@
   <h1>Código fuente para rl_salamandra_alignment.cli</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Console script for rl_salamandra_alignment.&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">rl_salamandra_alignment</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">argparse</span> <span class="kn">import</span> <span class="n">ArgumentParser</span>
+<span class="kn">import</span> <span class="nn">rl_salamandra_alignment</span>
 <span class="kn">from</span> <span class="nn">rl_salamandra_alignment.generate_scripts</span> <span class="kn">import</span> <span class="n">generate_all_job_files</span>
 <span class="kn">from</span> <span class="nn">rl_salamandra_alignment.utils.general</span> <span class="kn">import</span> <span class="n">try_load_config</span>
+<span class="kn">from</span> <span class="nn">rl_salamandra_alignment.utils.job_submission</span> <span class="kn">import</span> <span class="n">submit_job</span><span class="p">,</span> <span class="n">submit_job_with_retries</span>
+<span class="kn">from</span> <span class="nn">rl_salamandra_alignment</span> <span class="kn">import</span> <span class="n">logger</span>
+
 
 <div class="viewcode-block" id="main">
 <a class="viewcode-back" href="../../rl_salamandra_alignment.html#rl_salamandra_alignment.cli.main">[documentos]</a>
@@ -90,15 +96,76 @@
     <span class="n">parser</span> <span class="o">=</span> <span class="n">ArgumentParser</span><span class="p">()</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s2">&quot;config&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;YAML Config file for RL&quot;</span><span class="p">)</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;YAML Config file for RL&quot;</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--debug&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;activate debug mode. Nothing will be submited to slurm&quot;</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--no_evaluation&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Skip evaluation, only train&quot;</span>
+    <span class="p">)</span>
+
     <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
 
+    <span class="c1"># Setup debug mode:</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">no_evaluation</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">rl_salamandra_alignment</span><span class="o">.</span><span class="n">setup_logging</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Debugging mode!&quot;</span><span class="p">)</span>
+
     <span class="n">config</span> <span class="o">=</span> <span class="n">try_load_config</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;evaluation&quot;</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="s2">&quot;No &#39;evaluation&#39; found in config file. Evaluation scripts will NOT be generated&quot;</span>
+        <span class="p">)</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">no_evaluation</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="c1"># Generate job files</span>
+
     <span class="n">all_job_files</span> <span class="o">=</span> <span class="n">generate_all_job_files</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">distributed_run_script</span><span class="p">,</span> <span class="n">launch_script</span> <span class="ow">in</span> <span class="n">all_job_files</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="o">*</span><span class="mi">10</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Distributed execution script:</span><span class="se">\n</span><span class="si">{</span><span class="n">distributed_run_script</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Launch script:</span><span class="se">\n</span><span class="si">{</span><span class="n">launch_script</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Scripts have been generated and can be found in:&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span>
+                <span class="n">all_job_files</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;slrum_training_distributed_run&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="c1"># Submit jobs:</span>
+
+    <span class="k">for</span> <span class="n">script_dict</span> <span class="ow">in</span> <span class="n">all_job_files</span><span class="p">:</span>
+
+        <span class="c1"># submit training</span>
+        <span class="n">training_job_id</span> <span class="o">=</span> <span class="n">submit_job</span><span class="p">(</span>
+            <span class="n">script_dict</span><span class="p">[</span><span class="s2">&quot;slrum_training_distributed_run&quot;</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Submitted Training: </span><span class="si">{</span><span class="n">training_job_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># submit evaluation</span>
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">no_evaluation</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># harness</span>
+            <span class="n">harness_job_id</span> <span class="o">=</span> <span class="n">submit_job</span><span class="p">(</span>
+                <span class="n">script_dict</span><span class="p">[</span><span class="s2">&quot;slurm_eval_harness_job&quot;</span><span class="p">],</span>
+                <span class="n">dependency</span><span class="o">=</span><span class="n">training_job_id</span>
+            <span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Submitted Harness Eval: </span><span class="si">{</span><span class="n">harness_job_id</span><span class="si">}</span><span class="s2"> dependent on </span><span class="si">{</span><span class="n">training_job_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="c1"># local</span>
+            <span class="n">local_eval_job_id</span> <span class="o">=</span> <span class="n">submit_job</span><span class="p">(</span>
+                <span class="n">script_dict</span><span class="p">[</span><span class="s2">&quot;slurm_eval_local_job&quot;</span><span class="p">],</span>
+                <span class="n">dependency</span><span class="o">=</span><span class="n">training_job_id</span>
+            <span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Submitted Local Eval: </span><span class="si">{</span><span class="n">local_eval_job_id</span><span class="si">}</span><span class="s2"> dependent on </span><span class="si">{</span><span class="n">training_job_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
 

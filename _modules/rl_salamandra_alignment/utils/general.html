@@ -116,6 +116,8 @@
     <span class="c1"># Base case: if the dictionary is empty, return a single empty dictionary</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">input_dict</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">[{}]</span>
+    <span class="c1"># Do not unfold &quot;evaluation&quot;</span>
+    <span class="n">evaluation_config</span> <span class="o">=</span> <span class="n">input_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;evaluation&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
     <span class="c1"># Resultant list to store the unfolded dictionaries</span>
     <span class="n">result</span> <span class="o">=</span> <span class="p">[{}]</span>
@@ -148,6 +150,11 @@
                 <span class="n">partial_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
     <span class="n">result</span> <span class="o">=</span> <span class="p">[</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">result</span><span class="p">]</span>
 
+    <span class="c1"># Make sure all configs share the same evaluation config.</span>
+    <span class="k">if</span> <span class="n">evaluation_config</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+            <span class="n">d</span><span class="p">[</span><span class="s2">&quot;evaluation&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">evaluation_config</span><span class="p">)</span>
+    
     <span class="k">return</span> <span class="n">dict_sort</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></div>
 
 
@@ -174,8 +181,8 @@
     <span class="k">except</span> <span class="n">yaml</span><span class="o">.</span><span class="n">YAMLError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error in configuration file: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">config</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Using the following configuration:&quot;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Using the following configuration:&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
         <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">config</span></div>

@@ -102,17 +102,27 @@
 </li>
       <li><a href="rl_salamandra_alignment.html#rl_salamandra_alignment.generate_scripts.generate_distributed_run_script">generate_distributed_run_script() (en el módulo rl_salamandra_alignment.generate_scripts)</a>
 </li>
+      <li><a href="rl_salamandra_alignment.html#rl_salamandra_alignment.generate_scripts.generate_eval_scripts_for_one_training">generate_eval_scripts_for_one_training() (en el módulo rl_salamandra_alignment.generate_scripts)</a>
+</li>
+      <li><a href="rl_salamandra_alignment.html#rl_salamandra_alignment.generate_scripts.generate_harness_eval_script">generate_harness_eval_script() (en el módulo rl_salamandra_alignment.generate_scripts)</a>
+</li>
       <li><a href="rl_salamandra_alignment.html#rl_salamandra_alignment.generate_scripts.generate_launch_script">generate_launch_script() (en el módulo rl_salamandra_alignment.generate_scripts)</a>
 </li>
-      <li><a href="rl_salamandra_alignment.html#rl_salamandra_alignment.generate_scripts.generate_one_job">generate_one_job() (en el módulo rl_salamandra_alignment.generate_scripts)</a>
+      <li><a href="rl_salamandra_alignment.html#rl_salamandra_alignment.generate_scripts.generate_local_eval_script">generate_local_eval_script() (en el módulo rl_salamandra_alignment.generate_scripts)</a>
 </li>
-      <li><a href="rl_salamandra_alignment.html#rl_salamandra_alignment.generate_scripts.generate_slurm_preamble">generate_slurm_preamble() (en el módulo rl_salamandra_alignment.generate_scripts)</a>
+      <li><a href="rl_salamandra_alignment.html#rl_salamandra_alignment.generate_scripts.generate_one_job_set">generate_one_job_set() (en el módulo rl_salamandra_alignment.generate_scripts)</a>
+</li>
+      <li><a href="rl_salamandra_alignment.html#rl_salamandra_alignment.generate_scripts.generate_one_training_job">generate_one_training_job() (en el módulo rl_salamandra_alignment.generate_scripts)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="rl_salamandra_alignment.html#rl_salamandra_alignment.generate_scripts.generate_slurm_preamble">generate_slurm_preamble() (en el módulo rl_salamandra_alignment.generate_scripts)</a>
+</li>
       <li><a href="rl_salamandra_alignment.distributed_configs.html#rl_salamandra_alignment.distributed_configs.get_distributed_config_path">get_distributed_config_path() (en el módulo rl_salamandra_alignment.distributed_configs)</a>
 </li>
       <li><a href="rl_salamandra_alignment.templates.html#rl_salamandra_alignment.templates.get_distributed_run_template">get_distributed_run_template() (en el módulo rl_salamandra_alignment.templates)</a>
+</li>
+      <li><a href="rl_salamandra_alignment.templates.html#rl_salamandra_alignment.templates.get_harness_template">get_harness_template() (en el módulo rl_salamandra_alignment.templates)</a>
 </li>
       <li><a href="rl_salamandra_alignment.templates.html#rl_salamandra_alignment.templates.get_launch_script_template">get_launch_script_template() (en el módulo rl_salamandra_alignment.templates)</a>
 </li>
@@ -149,6 +159,8 @@
         <li><a href="rl_salamandra_alignment.utils.html#module-rl_salamandra_alignment.utils">rl_salamandra_alignment.utils</a>
 </li>
         <li><a href="rl_salamandra_alignment.utils.html#module-rl_salamandra_alignment.utils.general">rl_salamandra_alignment.utils.general</a>
+</li>
+        <li><a href="rl_salamandra_alignment.utils.html#module-rl_salamandra_alignment.utils.job_submission">rl_salamandra_alignment.utils.job_submission</a>
 </li>
       </ul></li>
   </ul></td>
@@ -217,6 +229,13 @@
         <li><a href="rl_salamandra_alignment.utils.html#module-rl_salamandra_alignment.utils.general">module</a>
 </li>
       </ul></li>
+      <li>
+    rl_salamandra_alignment.utils.job_submission
+
+      <ul>
+        <li><a href="rl_salamandra_alignment.utils.html#module-rl_salamandra_alignment.utils.job_submission">module</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -225,11 +244,15 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="rl_salamandra_alignment.html#rl_salamandra_alignment.setup_logging">setup_logging() (en el módulo rl_salamandra_alignment)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="rl_salamandra_alignment.html#rl_salamandra_alignment.generate_scripts.setup_macro_output_dir_tree">setup_macro_output_dir_tree() (en el módulo rl_salamandra_alignment.generate_scripts)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="rl_salamandra_alignment.html#rl_salamandra_alignment.generate_scripts.setup_micro_output_dir_tree">setup_micro_output_dir_tree() (en el módulo rl_salamandra_alignment.generate_scripts)</a>
+</li>
+      <li><a href="rl_salamandra_alignment.utils.html#rl_salamandra_alignment.utils.job_submission.submit_job">submit_job() (en el módulo rl_salamandra_alignment.utils.job_submission)</a>
+</li>
+      <li><a href="rl_salamandra_alignment.utils.html#rl_salamandra_alignment.utils.job_submission.submit_job_with_retries">submit_job_with_retries() (en el módulo rl_salamandra_alignment.utils.job_submission)</a>
 </li>
   </ul></td>
 </tr></table>

@@ -66,8 +66,12 @@
 <li class="toctree-l3"><a class="reference internal" href="#module-rl_salamandra_alignment.generate_scripts">rl_salamandra_alignment.generate_scripts module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#rl_salamandra_alignment.generate_scripts.generate_all_job_files"><code class="docutils literal notranslate"><span class="pre">generate_all_job_files()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#rl_salamandra_alignment.generate_scripts.generate_distributed_run_script"><code class="docutils literal notranslate"><span class="pre">generate_distributed_run_script()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#rl_salamandra_alignment.generate_scripts.generate_eval_scripts_for_one_training"><code class="docutils literal notranslate"><span class="pre">generate_eval_scripts_for_one_training()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#rl_salamandra_alignment.generate_scripts.generate_harness_eval_script"><code class="docutils literal notranslate"><span class="pre">generate_harness_eval_script()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#rl_salamandra_alignment.generate_scripts.generate_launch_script"><code class="docutils literal notranslate"><span class="pre">generate_launch_script()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#rl_salamandra_alignment.generate_scripts.generate_one_job"><code class="docutils literal notranslate"><span class="pre">generate_one_job()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#rl_salamandra_alignment.generate_scripts.generate_local_eval_script"><code class="docutils literal notranslate"><span class="pre">generate_local_eval_script()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#rl_salamandra_alignment.generate_scripts.generate_one_job_set"><code class="docutils literal notranslate"><span class="pre">generate_one_job_set()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#rl_salamandra_alignment.generate_scripts.generate_one_training_job"><code class="docutils literal notranslate"><span class="pre">generate_one_training_job()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#rl_salamandra_alignment.generate_scripts.generate_slurm_preamble"><code class="docutils literal notranslate"><span class="pre">generate_slurm_preamble()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#rl_salamandra_alignment.generate_scripts.get_output_dir"><code class="docutils literal notranslate"><span class="pre">get_output_dir()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#rl_salamandra_alignment.generate_scripts.get_script_args_string"><code class="docutils literal notranslate"><span class="pre">get_script_args_string()</span></code></a></li>
@@ -130,6 +134,7 @@
 <li class="toctree-l1"><a class="reference internal" href="rl_salamandra_alignment.templates.html">rl_salamandra_alignment.templates package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="rl_salamandra_alignment.templates.html#module-rl_salamandra_alignment.templates">Module contents</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="rl_salamandra_alignment.templates.html#rl_salamandra_alignment.templates.get_distributed_run_template"><code class="docutils literal notranslate"><span class="pre">get_distributed_run_template()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rl_salamandra_alignment.templates.html#rl_salamandra_alignment.templates.get_harness_template"><code class="docutils literal notranslate"><span class="pre">get_harness_template()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="rl_salamandra_alignment.templates.html#rl_salamandra_alignment.templates.get_launch_script_template"><code class="docutils literal notranslate"><span class="pre">get_launch_script_template()</span></code></a></li>
 </ul>
 </li>
@@ -166,6 +171,11 @@
 <li class="toctree-l3"><a class="reference internal" href="rl_salamandra_alignment.utils.html#rl_salamandra_alignment.utils.general.dict_sort"><code class="docutils literal notranslate"><span class="pre">dict_sort()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="rl_salamandra_alignment.utils.html#rl_salamandra_alignment.utils.general.try_load_config"><code class="docutils literal notranslate"><span class="pre">try_load_config()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="rl_salamandra_alignment.utils.html#rl_salamandra_alignment.utils.general.unfold_dict"><code class="docutils literal notranslate"><span class="pre">unfold_dict()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rl_salamandra_alignment.utils.html#module-rl_salamandra_alignment.utils.job_submission">rl_salamandra_alignment.utils.job_submission module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rl_salamandra_alignment.utils.html#rl_salamandra_alignment.utils.job_submission.submit_job"><code class="docutils literal notranslate"><span class="pre">submit_job()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rl_salamandra_alignment.utils.html#rl_salamandra_alignment.utils.job_submission.submit_job_with_retries"><code class="docutils literal notranslate"><span class="pre">submit_job_with_retries()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="rl_salamandra_alignment.utils.html#module-rl_salamandra_alignment.utils">Module contents</a></li>
@@ -231,6 +241,48 @@
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="rl_salamandra_alignment.generate_scripts.generate_eval_scripts_for_one_training">
+<span class="sig-prename descclassname"><span class="pre">rl_salamandra_alignment.generate_scripts.</span></span><span class="sig-name descname"><span class="pre">generate_eval_scripts_for_one_training</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rl_salamandra_alignment/generate_scripts.html#generate_eval_scripts_for_one_training"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#rl_salamandra_alignment.generate_scripts.generate_eval_scripts_for_one_training" title="Link to this definition"></a></dt>
+<dd><p>Generate the EVALUATION slurm scripts for a subexperiment</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>output_dir</strong> (<em>str</em>) – root directory for the outputs of the experiment.</p></li>
+<li><p><strong>config</strong> (<em>dict</em>) – execution config dict for subexperiment</p></li>
+<li><p><strong>id</strong> (<em>str</em>) – Sub-experiment id</p></li>
+</ul>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p>paths to the evaluation scripts</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rl_salamandra_alignment.generate_scripts.generate_harness_eval_script">
+<span class="sig-prename descclassname"><span class="pre">rl_salamandra_alignment.generate_scripts.</span></span><span class="sig-name descname"><span class="pre">generate_harness_eval_script</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rl_salamandra_alignment/generate_scripts.html#generate_harness_eval_script"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#rl_salamandra_alignment.generate_scripts.generate_harness_eval_script" title="Link to this definition"></a></dt>
+<dd><p>Generate the HARNESS evaluation slurm scripts for a subexperiment</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>output_dir</strong> (<em>str</em>) – root directory for the outputs of the experiment.</p></li>
+<li><p><strong>config</strong> (<em>dict</em>) – execution config dict for subexperiment</p></li>
+<li><p><strong>id</strong> (<em>str</em>) – Sub-experiment id</p></li>
+</ul>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p>paths to the harness evaluation scripts</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="rl_salamandra_alignment.generate_scripts.generate_launch_script">
 <span class="sig-prename descclassname"><span class="pre">rl_salamandra_alignment.generate_scripts.</span></span><span class="sig-name descname"><span class="pre">generate_launch_script</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rl_salamandra_alignment/generate_scripts.html#generate_launch_script"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#rl_salamandra_alignment.generate_scripts.generate_launch_script" title="Link to this definition"></a></dt>
 <dd><p>Write the script for launching a subexperiment, by filling out the script template.</p>
@@ -252,9 +304,52 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="rl_salamandra_alignment.generate_scripts.generate_one_job">
-<span class="sig-prename descclassname"><span class="pre">rl_salamandra_alignment.generate_scripts.</span></span><span class="sig-name descname"><span class="pre">generate_one_job</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rl_salamandra_alignment/generate_scripts.html#generate_one_job"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#rl_salamandra_alignment.generate_scripts.generate_one_job" title="Link to this definition"></a></dt>
-<dd><p>Generate the slurm scripts for a subexperiment</p>
+<dt class="sig sig-object py" id="rl_salamandra_alignment.generate_scripts.generate_local_eval_script">
+<span class="sig-prename descclassname"><span class="pre">rl_salamandra_alignment.generate_scripts.</span></span><span class="sig-name descname"><span class="pre">generate_local_eval_script</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rl_salamandra_alignment/generate_scripts.html#generate_local_eval_script"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#rl_salamandra_alignment.generate_scripts.generate_local_eval_script" title="Link to this definition"></a></dt>
+<dd><p>Generate the LOCAL evaluation slurm scripts for a subexperiment
+(for example, red teaming)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>output_dir</strong> (<em>str</em>) – root directory for the outputs of the experiment.</p></li>
+<li><p><strong>config</strong> (<em>dict</em>) – execution config dict for subexperiment</p></li>
+<li><p><strong>id</strong> (<em>str</em>) – Sub-experiment id</p></li>
+</ul>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p>paths to the local evaluation scripts</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rl_salamandra_alignment.generate_scripts.generate_one_job_set">
+<span class="sig-prename descclassname"><span class="pre">rl_salamandra_alignment.generate_scripts.</span></span><span class="sig-name descname"><span class="pre">generate_one_job_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rl_salamandra_alignment/generate_scripts.html#generate_one_job_set"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#rl_salamandra_alignment.generate_scripts.generate_one_job_set" title="Link to this definition"></a></dt>
+<dd><p>Generate the slurm scripts for a subexperiment (both training and evaluation)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>output_dir</strong> (<em>str</em>) – root directory for the outputs of the experiment.</p></li>
+<li><p><strong>config</strong> (<em>dict</em>) – execution config dict for subexperiment</p></li>
+<li><p><strong>id</strong> (<em>str</em>) – Sub-experiment id</p></li>
+</ul>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p>paths to the scripts for training and evaluation</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rl_salamandra_alignment.generate_scripts.generate_one_training_job">
+<span class="sig-prename descclassname"><span class="pre">rl_salamandra_alignment.generate_scripts.</span></span><span class="sig-name descname"><span class="pre">generate_one_training_job</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rl_salamandra_alignment/generate_scripts.html#generate_one_training_job"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#rl_salamandra_alignment.generate_scripts.generate_one_training_job" title="Link to this definition"></a></dt>
+<dd><p>Generate the TRAINING slurm scripts for a subexperiment</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parámetros<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -267,7 +362,7 @@
 <dd class="field-even"><p>paths to the distributed execution script and the launching script</p>
 </dd>
 <dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple</p>
+<dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
 </dd></dl>
@@ -386,7 +481,8 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="rl_salamandra_alignment.setup_logging">
 <span class="sig-prename descclassname"><span class="pre">rl_salamandra_alignment.</span></span><span class="sig-name descname"><span class="pre">setup_logging</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'%(asctime)s</span> <span class="pre">-</span> <span class="pre">%(name)s</span> <span class="pre">-</span> <span class="pre">%(levelname)s</span> <span class="pre">-</span> <span class="pre">%(message)s'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rl_salamandra_alignment.html#setup_logging"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#rl_salamandra_alignment.setup_logging" title="Link to this definition"></a></dt>
-<dd><p>Set up logging for this package.</p>
+<dd><p>Set up logging for this package.
+Ensures proper handler setup and allows dynamic level changes.</p>
 </dd></dl>
 
 </section>

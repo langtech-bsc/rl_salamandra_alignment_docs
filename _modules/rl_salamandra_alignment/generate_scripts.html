@@ -89,8 +89,7 @@
 <span class="kn">from</span> <span class="nn">rl_salamandra_alignment.utils.general</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">unfold_dict</span>
 <span class="p">)</span>
-
-
+<span class="kn">from</span> <span class="nn">rl_salamandra_alignment</span> <span class="kn">import</span> <span class="n">logger</span>
 
 
 <div class="viewcode-block" id="generate_slurm_preamble">
@@ -105,6 +104,11 @@
 <span class="sd">        str: Preamble with all #SBATCHs filled</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">slurm_preamble</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="c1"># Always ask for 4 gpus</span>
+    <span class="n">sbatch_args</span><span class="p">[</span><span class="s2">&quot;gres&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;gpu:4&quot;</span>
+    <span class="n">sbatch_args</span><span class="p">[</span><span class="s2">&quot;cpus-per-task&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">80</span>
+
     <span class="c1"># Fill &quot;#SBATCH&quot; arguments</span>
     <span class="k">for</span> <span class="n">arg_name</span><span class="p">,</span> <span class="n">arg_value</span> <span class="ow">in</span> <span class="n">sbatch_args</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="n">slurm_preamble</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;#SBATCH --</span><span class="si">{</span><span class="n">arg_name</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">arg_value</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -174,7 +178,6 @@
 <span class="sd">    Args:</span>
 <span class="sd">        output_dir (str): root directory for the outputs of the experiment.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="n">subdirs</span> <span class="o">=</span> <span class="p">[</span>
@@ -183,7 +186,8 @@
         <span class="s2">&quot;wandb&quot;</span><span class="p">,</span>
         <span class="s2">&quot;cache&quot;</span><span class="p">,</span>
         <span class="s2">&quot;training&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;configs&quot;</span>
+        <span class="s2">&quot;configs&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;evaluation&quot;</span>
     <span class="p">]</span>
     <span class="k">for</span> <span class="n">subdir</span> <span class="ow">in</span> <span class="n">subdirs</span><span class="p">:</span>
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">subdir</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -203,7 +207,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">d</span> <span class="o">=</span> <span class="p">{</span>
         <span class="n">k</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">,</span> <span class="s2">&quot;cache&quot;</span><span class="p">,</span> <span class="s2">&quot;training&quot;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">,</span> <span class="s2">&quot;cache&quot;</span><span class="p">,</span> <span class="s2">&quot;training&quot;</span><span class="p">,</span> <span class="s2">&quot;evaluation&quot;</span><span class="p">]</span>
     <span class="p">}</span>
     <span class="k">return</span> <span class="n">d</span>
 
@@ -219,10 +223,16 @@
 <span class="sd">        dict: Dictionary with the paths to the files for the subexperiment</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">d</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;slrum_script_distrubuted_run&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="s2">&quot;slurm_scripts&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;distributed_run_</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s2">.job&quot;</span><span class="p">),</span>
-        <span class="s2">&quot;slurm_script_launch&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="s2">&quot;slurm_scripts&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;launch_</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s1">.sh&#39;</span><span class="p">),</span>
-        <span class="s2">&quot;slurm_output&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="s2">&quot;slurm_logs&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s2">_output.log&quot;</span><span class="p">),</span>
-        <span class="s2">&quot;slurm_error&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="s2">&quot;slurm_logs&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s2">_error.log&quot;</span><span class="p">),</span>
+        <span class="s2">&quot;slrum_training_distributed_run&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="s2">&quot;slurm_scripts&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;distributed_run_</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s2">.job&quot;</span><span class="p">),</span>
+        <span class="s2">&quot;slurm_training_launch&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="s2">&quot;slurm_scripts&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;launch_</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s1">.sh&#39;</span><span class="p">),</span>
+        <span class="s2">&quot;slurm_training_output&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="s2">&quot;slurm_logs&quot;</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;%j_%x_training.log&quot;</span><span class="p">),</span>
+        <span class="s2">&quot;slurm_training_error&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="s2">&quot;slurm_logs&quot;</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;%j_%x_training.err&quot;</span><span class="p">),</span>
+        <span class="s2">&quot;slurm_eval_harness_job&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="s2">&quot;slurm_scripts&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;eval_harness_</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s2">.job&quot;</span><span class="p">),</span>
+        <span class="s2">&quot;slurm_eval_harness_output&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="s2">&quot;slurm_logs&quot;</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;%j_%x_eval_harness.log&quot;</span><span class="p">),</span>
+        <span class="s2">&quot;slurm_eval_harness_error&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="s2">&quot;slurm_logs&quot;</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;%j_%x_eval_harness.err&quot;</span><span class="p">),</span>
+        <span class="s2">&quot;slurm_eval_local_job&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="s2">&quot;slurm_scripts&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;eval_local_</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s2">.job&quot;</span><span class="p">),</span>
+        <span class="s2">&quot;slurm_eval_local_output&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="s2">&quot;slurm_logs&quot;</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;%j_%x_eval_local.log&quot;</span><span class="p">),</span>
+        <span class="s2">&quot;slurm_eval_local_error&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="s2">&quot;slurm_logs&quot;</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;%j_%x_eval_local.err&quot;</span><span class="p">),</span>
         <span class="s2">&quot;config&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="s2">&quot;configs&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;config_</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s2">.json&quot;</span><span class="p">)</span>
     <span class="p">}</span>
     <span class="k">return</span> <span class="n">d</span>
@@ -257,6 +267,10 @@
     <span class="c1"># training</span>
     <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span>
         <span class="n">internal_dir_paths</span><span class="p">[</span><span class="s2">&quot;training&quot;</span><span class="p">],</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+    <span class="c1"># evaluation</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span>
+        <span class="n">internal_dir_paths</span><span class="p">[</span><span class="s2">&quot;evaluation&quot;</span><span class="p">],</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span>
     <span class="p">)</span>
     <span class="c1"># configs</span>
     <span class="n">internal_file_paths</span> <span class="o">=</span> <span class="n">_internal_file_paths</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
@@ -296,9 +310,9 @@
     <span class="c1"># Automatically determine log file</span>
     <span class="n">slurm_config</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;slurm&quot;</span><span class="p">])</span>
     <span class="n">output_dir</span> <span class="o">=</span> <span class="n">get_output_dir</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
-    <span class="n">slurm_config</span><span class="p">[</span><span class="s2">&quot;job-name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">id</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">slurm_config</span><span class="p">[</span><span class="s2">&quot;job-name&quot;</span><span class="p">]</span>
-    <span class="n">slurm_config</span><span class="p">[</span><span class="s2">&quot;output&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">internal_file_paths</span><span class="p">[</span><span class="s2">&quot;slurm_output&quot;</span><span class="p">]</span>
-    <span class="n">slurm_config</span><span class="p">[</span><span class="s2">&quot;error&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">internal_file_paths</span><span class="p">[</span><span class="s2">&quot;slurm_error&quot;</span><span class="p">]</span>
+    <span class="n">slurm_config</span><span class="p">[</span><span class="s2">&quot;job-name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s2">_train_&quot;</span> <span class="o">+</span> <span class="n">slurm_config</span><span class="p">[</span><span class="s2">&quot;job-name&quot;</span><span class="p">]</span>
+    <span class="n">slurm_config</span><span class="p">[</span><span class="s2">&quot;output&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">internal_file_paths</span><span class="p">[</span><span class="s2">&quot;slurm_training_output&quot;</span><span class="p">]</span>
+    <span class="n">slurm_config</span><span class="p">[</span><span class="s2">&quot;error&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">internal_file_paths</span><span class="p">[</span><span class="s2">&quot;slurm_training_error&quot;</span><span class="p">]</span>
 
     <span class="n">slurm_preamble</span> <span class="o">=</span> <span class="n">generate_slurm_preamble</span><span class="p">(</span><span class="n">slurm_config</span><span class="p">)</span>
     <span class="n">filled_template</span> <span class="o">=</span> <span class="n">replace_in_template</span><span class="p">(</span>
@@ -308,7 +322,7 @@
     <span class="p">)</span>
 
     <span class="c1"># fill the Launch script</span>
-    <span class="n">launch_script_path</span> <span class="o">=</span> <span class="n">internal_file_paths</span><span class="p">[</span><span class="s2">&quot;slurm_script_launch&quot;</span><span class="p">]</span>
+    <span class="n">launch_script_path</span> <span class="o">=</span> <span class="n">internal_file_paths</span><span class="p">[</span><span class="s2">&quot;slurm_training_launch&quot;</span><span class="p">]</span>
     <span class="n">filled_template</span> <span class="o">=</span> <span class="n">replace_in_template</span><span class="p">(</span>
         <span class="n">filled_template</span><span class="p">,</span>
         <span class="s2">&quot;LAUNCH_SCRIPT&quot;</span><span class="p">,</span>
@@ -391,9 +405,9 @@
     <span class="c1"># RL Dataset</span>
     <span class="c1"># ============</span>
     <span class="n">rl_dataset_path</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rl_script_args&quot;</span><span class="p">][</span><span class="s2">&quot;dataset_name&quot;</span><span class="p">]</span>
-    
+
     <span class="c1"># The following line is to avoid using the original path to the RL dataset.</span>
-    <span class="c1"># Remember that the RL dataset is converted to a format that can be locally run in MN5, </span>
+    <span class="c1"># Remember that the RL dataset is converted to a format that can be locally run in MN5,</span>
     <span class="c1"># and this conversion happens before launching the fine-tuning</span>
     <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rl_script_args&quot;</span><span class="p">][</span><span class="s2">&quot;dataset_name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;$RL_DATASET_PATH&quot;</span>
 
@@ -446,6 +460,9 @@
     <span class="c1"># This is very important for distributed distribution</span>
     <span class="n">rl_config_args</span><span class="p">[</span><span class="s2">&quot;local_rank&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;$SLURM_LOCALID&quot;</span>
 
+    <span class="c1"># Name for WanDB syncing</span>
+    <span class="n">rl_config_args</span><span class="p">[</span><span class="s2">&quot;run_name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;$WANDB_NAME&quot;</span>
+
     <span class="n">filled_template</span> <span class="o">=</span> <span class="n">replace_in_template</span><span class="p">(</span>
         <span class="n">filled_template</span><span class="p">,</span>
         <span class="s2">&quot;RL_CONFIG_ARGS&quot;</span><span class="p">,</span>
@@ -482,10 +499,10 @@
 
 
 
-<div class="viewcode-block" id="generate_one_job">
-<a class="viewcode-back" href="../../rl_salamandra_alignment.html#rl_salamandra_alignment.generate_scripts.generate_one_job">[documentos]</a>
-<span class="k">def</span> <span class="nf">generate_one_job</span><span class="p">(</span><span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate the slurm scripts for a subexperiment</span>
+<div class="viewcode-block" id="generate_one_training_job">
+<a class="viewcode-back" href="../../rl_salamandra_alignment.html#rl_salamandra_alignment.generate_scripts.generate_one_training_job">[documentos]</a>
+<span class="k">def</span> <span class="nf">generate_one_training_job</span><span class="p">(</span><span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate the TRAINING slurm scripts for a subexperiment</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        output_dir (str): root directory for the outputs of the experiment.</span>
@@ -493,9 +510,9 @@
 <span class="sd">        id (str): Sub-experiment id</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        tuple: paths to the distributed execution script and the launching script</span>
+<span class="sd">        dict: paths to the distributed execution script and the launching script</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    
+
     <span class="c1"># Generate the content of the scripts</span>
     <span class="n">launch_script_string</span> <span class="o">=</span> <span class="n">generate_launch_script</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
 
@@ -509,19 +526,217 @@
     <span class="n">internal_file_paths</span> <span class="o">=</span> <span class="n">_internal_file_paths</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
 
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span>
-        <span class="n">internal_file_paths</span><span class="p">[</span><span class="s2">&quot;slrum_script_distrubuted_run&quot;</span><span class="p">],</span> <span class="s2">&quot;w&quot;</span>
+        <span class="n">internal_file_paths</span><span class="p">[</span><span class="s2">&quot;slrum_training_distributed_run&quot;</span><span class="p">],</span> <span class="s2">&quot;w&quot;</span>
     <span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">distributed_run_script_string</span><span class="p">)</span>
 
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span>
-        <span class="n">internal_file_paths</span><span class="p">[</span><span class="s2">&quot;slurm_script_launch&quot;</span><span class="p">],</span> <span class="s2">&quot;w&quot;</span>
+        <span class="n">internal_file_paths</span><span class="p">[</span><span class="s2">&quot;slurm_training_launch&quot;</span><span class="p">],</span> <span class="s2">&quot;w&quot;</span>
     <span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">launch_script_string</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="p">(</span>
-        <span class="n">internal_file_paths</span><span class="p">[</span><span class="s2">&quot;slrum_script_distrubuted_run&quot;</span><span class="p">],</span>
-        <span class="n">internal_file_paths</span><span class="p">[</span><span class="s2">&quot;slurm_script_launch&quot;</span><span class="p">]</span>
-    <span class="p">)</span></div>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;slrum_training_distributed_run&quot;</span><span class="p">:</span> <span class="n">internal_file_paths</span><span class="p">[</span><span class="s2">&quot;slrum_training_distributed_run&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;slurm_training_launch&quot;</span><span class="p">:</span> <span class="n">internal_file_paths</span><span class="p">[</span><span class="s2">&quot;slurm_training_launch&quot;</span><span class="p">]</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="generate_local_eval_script">
+<a class="viewcode-back" href="../../rl_salamandra_alignment.html#rl_salamandra_alignment.generate_scripts.generate_local_eval_script">[documentos]</a>
+<span class="k">def</span> <span class="nf">generate_local_eval_script</span><span class="p">(</span><span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate the LOCAL evaluation slurm scripts for a subexperiment</span>
+<span class="sd">    (for example, red teaming)</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        output_dir (str): root directory for the outputs of the experiment.</span>
+<span class="sd">        config (dict): execution config dict for subexperiment</span>
+<span class="sd">        id (str): Sub-experiment id</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: paths to the local evaluation scripts</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># TODO</span>
+    <span class="k">return</span> <span class="s2">&quot;&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="generate_harness_eval_script">
+<a class="viewcode-back" href="../../rl_salamandra_alignment.html#rl_salamandra_alignment.generate_scripts.generate_harness_eval_script">[documentos]</a>
+<span class="k">def</span> <span class="nf">generate_harness_eval_script</span><span class="p">(</span><span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate the HARNESS evaluation slurm scripts for a subexperiment</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        output_dir (str): root directory for the outputs of the experiment.</span>
+<span class="sd">        config (dict): execution config dict for subexperiment</span>
+<span class="sd">        id (str): Sub-experiment id</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: paths to the harness evaluation scripts</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">filled_template</span> <span class="o">=</span> <span class="n">templates</span><span class="o">.</span><span class="n">get_harness_template</span><span class="p">()</span>
+    <span class="n">internal_file_paths</span> <span class="o">=</span> <span class="n">_internal_file_paths</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+    <span class="n">internal_dir_paths</span> <span class="o">=</span> <span class="n">_internal_dir_paths</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+
+    <span class="c1"># ============</span>
+    <span class="c1"># Slurm preamble</span>
+    <span class="c1"># ============</span>
+
+    <span class="c1"># Keep the same job name for eval and training (different prefixes)</span>
+    <span class="n">job_name</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;slurm&quot;</span><span class="p">][</span><span class="s2">&quot;job-name&quot;</span><span class="p">]</span>
+
+    <span class="c1"># First look for specific slurm requirements for harness eval,</span>
+    <span class="c1"># if not found, use the same slurm requirements from training.</span>
+
+    <span class="k">if</span> <span class="s2">&quot;harness_slurm&quot;</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;evaluation&quot;</span><span class="p">,</span> <span class="p">()):</span>
+        <span class="n">slurm_config</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;evaluation&quot;</span><span class="p">][</span><span class="s2">&quot;harness_slurm&quot;</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Did not find custom SLURM requirements for Harness Evaluation.</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;You can specify them in your config, under &#39;evaluation&#39;.&#39;harness_slurm&#39;</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;Defaulting to the same SLURM requirements used for training.&quot;</span>
+        <span class="p">)</span>
+        <span class="n">slurm_config</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;slurm&quot;</span><span class="p">])</span>
+
+    <span class="c1"># Automatically determine log files and jobname</span>
+    <span class="n">slurm_config</span><span class="p">[</span><span class="s2">&quot;job-name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s2">_eval_harn_&quot;</span> <span class="o">+</span> <span class="n">job_name</span>
+    <span class="n">slurm_config</span><span class="p">[</span><span class="s2">&quot;output&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">internal_file_paths</span><span class="p">[</span><span class="s2">&quot;slurm_eval_harness_output&quot;</span><span class="p">]</span>
+    <span class="n">slurm_config</span><span class="p">[</span><span class="s2">&quot;error&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">internal_file_paths</span><span class="p">[</span><span class="s2">&quot;slurm_eval_harness_error&quot;</span><span class="p">]</span>
+
+    <span class="n">slurm_preamble</span> <span class="o">=</span> <span class="n">generate_slurm_preamble</span><span class="p">(</span><span class="n">slurm_config</span><span class="p">)</span>
+    <span class="n">filled_template</span> <span class="o">=</span> <span class="n">replace_in_template</span><span class="p">(</span>
+        <span class="n">filled_template</span><span class="p">,</span>
+        <span class="s2">&quot;SBATCH_PARAMETERS&quot;</span><span class="p">,</span>
+        <span class="n">slurm_preamble</span>
+    <span class="p">)</span>
+
+    <span class="c1"># ============</span>
+    <span class="c1"># Model info</span>
+    <span class="c1"># ============</span>
+    <span class="c1"># Get the trained model</span>
+    <span class="n">model_path</span> <span class="o">=</span> <span class="n">internal_dir_paths</span><span class="p">[</span><span class="s2">&quot;training&quot;</span><span class="p">]</span>
+    <span class="n">model_name</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;model_config_args&quot;</span><span class="p">][</span><span class="s2">&quot;model_name_or_path&quot;</span><span class="p">]</span>
+    <span class="n">model_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">model_name</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="n">filled_template</span> <span class="o">=</span> <span class="n">replace_in_template</span><span class="p">(</span>
+        <span class="n">filled_template</span><span class="p">,</span>
+        <span class="s2">&quot;MODEL_PATH&quot;</span><span class="p">,</span>
+        <span class="n">model_path</span>
+    <span class="p">)</span>
+    <span class="n">filled_template</span> <span class="o">=</span> <span class="n">replace_in_template</span><span class="p">(</span>
+        <span class="n">filled_template</span><span class="p">,</span>
+        <span class="s2">&quot;MODEL_NAME&quot;</span><span class="p">,</span>
+        <span class="n">model_name</span>
+    <span class="p">)</span>
+
+    <span class="c1"># ============</span>
+    <span class="c1"># Task list</span>
+    <span class="c1"># ============</span>
+
+    <span class="n">task_list</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;evaluation&quot;</span><span class="p">][</span><span class="s2">&quot;harness_tasks&quot;</span><span class="p">]</span>
+    <span class="n">task_list</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">task_list</span><span class="p">)</span>
+
+    <span class="n">filled_template</span> <span class="o">=</span> <span class="n">replace_in_template</span><span class="p">(</span>
+        <span class="n">filled_template</span><span class="p">,</span>
+        <span class="s2">&quot;TASK_LIST&quot;</span><span class="p">,</span>
+        <span class="n">task_list</span>
+    <span class="p">)</span>
+
+    <span class="c1"># ============</span>
+    <span class="c1"># Harness output_path</span>
+    <span class="c1"># ============</span>
+    <span class="n">harness_output_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="n">internal_dir_paths</span><span class="p">[</span><span class="s2">&quot;evaluation&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;harness&quot;</span>
+    <span class="p">)</span>
+
+    <span class="n">filled_template</span> <span class="o">=</span> <span class="n">replace_in_template</span><span class="p">(</span>
+        <span class="n">filled_template</span><span class="p">,</span>
+        <span class="s2">&quot;HARNESS_EVAL_OUTPUT_PATH&quot;</span><span class="p">,</span>
+        <span class="n">harness_output_path</span>
+    <span class="p">)</span>
+
+    <span class="c1"># ============</span>
+    <span class="c1"># Cache path</span>
+    <span class="c1"># ============</span>
+    <span class="n">filled_template</span> <span class="o">=</span> <span class="n">replace_in_template</span><span class="p">(</span>
+        <span class="n">filled_template</span><span class="p">,</span>
+        <span class="s2">&quot;CACHE_DIR&quot;</span><span class="p">,</span>
+        <span class="n">internal_dir_paths</span><span class="p">[</span><span class="s2">&quot;cache&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">filled_template</span></div>
+
+
+
+<div class="viewcode-block" id="generate_eval_scripts_for_one_training">
+<a class="viewcode-back" href="../../rl_salamandra_alignment.html#rl_salamandra_alignment.generate_scripts.generate_eval_scripts_for_one_training">[documentos]</a>
+<span class="k">def</span> <span class="nf">generate_eval_scripts_for_one_training</span><span class="p">(</span><span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate the EVALUATION slurm scripts for a subexperiment</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        output_dir (str): root directory for the outputs of the experiment.</span>
+<span class="sd">        config (dict): execution config dict for subexperiment</span>
+<span class="sd">        id (str): Sub-experiment id</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: paths to the evaluation scripts</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># First generate harness evaluation script</span>
+    <span class="n">harness_eval_script</span> <span class="o">=</span> <span class="n">generate_harness_eval_script</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+
+    <span class="c1"># Then generate local evaluation scripts</span>
+    <span class="n">local_eval_script</span> <span class="o">=</span> <span class="n">generate_local_eval_script</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+
+    <span class="c1"># Save the content to file</span>
+    <span class="n">internal_file_paths</span> <span class="o">=</span> <span class="n">_internal_file_paths</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span>
+        <span class="n">internal_file_paths</span><span class="p">[</span><span class="s2">&quot;slurm_eval_harness_job&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;w&quot;</span>
+    <span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">harness_eval_script</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span>
+        <span class="n">internal_file_paths</span><span class="p">[</span><span class="s2">&quot;slurm_eval_local_job&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;w&quot;</span>
+    <span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">local_eval_script</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;slurm_eval_harness_job&quot;</span><span class="p">:</span> <span class="n">internal_file_paths</span><span class="p">[</span><span class="s2">&quot;slurm_eval_harness_job&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;slurm_eval_local_job&quot;</span><span class="p">:</span> <span class="n">internal_file_paths</span><span class="p">[</span><span class="s2">&quot;slurm_eval_local_job&quot;</span><span class="p">]</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="generate_one_job_set">
+<a class="viewcode-back" href="../../rl_salamandra_alignment.html#rl_salamandra_alignment.generate_scripts.generate_one_job_set">[documentos]</a>
+<span class="k">def</span> <span class="nf">generate_one_job_set</span><span class="p">(</span><span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate the slurm scripts for a subexperiment (both training and evaluation)</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        output_dir (str): root directory for the outputs of the experiment.</span>
+<span class="sd">        config (dict): execution config dict for subexperiment</span>
+<span class="sd">        id (str): Sub-experiment id</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: paths to the scripts for training and evaluation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">job_set_paths</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># First generate training job scripts</span>
+    <span class="n">training_scripts</span> <span class="o">=</span> <span class="n">generate_one_training_job</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+    <span class="n">job_set_paths</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">training_scripts</span><span class="p">)</span>
+
+    <span class="c1"># Then generate evaluation job scripts</span>
+    <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;evaluation&quot;</span><span class="p">):</span>
+        <span class="n">evaluation_scripts</span> <span class="o">=</span> <span class="n">generate_eval_scripts_for_one_training</span><span class="p">(</span>
+            <span class="n">output_dir</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+        <span class="n">job_set_paths</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">evaluation_scripts</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">job_set_paths</span></div>
 
 
 
@@ -538,13 +753,13 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">output_dir</span> <span class="o">=</span> <span class="n">get_output_dir</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
-    
+
     <span class="c1"># build the tree structure</span>
     <span class="n">setup_macro_output_dir_tree</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span>
 
     <span class="c1"># Generate the configs for all the subexperiments</span>
     <span class="n">unfolded_configs</span> <span class="o">=</span> <span class="n">unfold_dict</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
-    
+
     <span class="c1"># Give an ID to each subexperiment config</span>
     <span class="n">unfolded_configs_with_id</span> <span class="o">=</span> <span class="p">[</span>
         <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">cfg</span><span class="p">)</span>
@@ -556,7 +771,7 @@
 
     <span class="c1"># Generate all scripts</span>
     <span class="k">return</span> <span class="p">[</span>
-        <span class="n">generate_one_job</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">cfg</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+        <span class="n">generate_one_job_set</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">cfg</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
         <span class="k">for</span> <span class="nb">id</span><span class="p">,</span> <span class="n">cfg</span> <span class="ow">in</span> <span class="n">unfolded_configs_with_id</span>
     <span class="p">]</span></div>
 

@@ -1,0 +1,170 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="es" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>rl_salamandra_alignment.utils.job_submission &mdash; documentación de RL - Salamandra Alignment - 0.1.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=ba61de6b"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/translations.js?v=f85f4cfb"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Índice" href="../../../genindex.html" />
+    <link rel="search" title="Búsqueda" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            RL - Salamandra Alignment
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Buscar documentos" aria-label="Buscar documentos" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html">RL - Salamandra Alignment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">rl_salamandra_alignment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../history.html">History</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">RL - Salamandra Alignment</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Código de módulo</a></li>
+          <li class="breadcrumb-item"><a href="../../rl_salamandra_alignment.html">rl_salamandra_alignment</a></li>
+      <li class="breadcrumb-item active">rl_salamandra_alignment.utils.job_submission</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Código fuente para rl_salamandra_alignment.utils.job_submission</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Utilities for submitting jobs with SLURM</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+    
+<div class="viewcode-block" id="submit_job">
+<a class="viewcode-back" href="../../../rl_salamandra_alignment.utils.html#rl_salamandra_alignment.utils.job_submission.submit_job">[documentos]</a>
+<span class="k">def</span> <span class="nf">submit_job</span><span class="p">(</span><span class="n">job_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dependency</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Function to submit a job and return its job ID</span>
+<span class="sd">    Args:</span>
+<span class="sd">        job_file (str): Path to Slurm job file</span>
+<span class="sd">        dependency (str, optional): job id of dependency for submitting a new job. Defaults to None.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: job id of submitted job</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">command</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;sbatch&quot;</span><span class="p">,</span> <span class="s2">&quot;--parsable&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">dependency</span><span class="p">:</span>
+        <span class="n">command</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;--dependency=afterok:</span><span class="si">{</span><span class="n">dependency</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">command</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">job_file</span><span class="p">)</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">returncode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error submitting job: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">stderr</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">job_id</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">job_id</span></div>
+
+
+
+<div class="viewcode-block" id="submit_job_with_retries">
+<a class="viewcode-back" href="../../../rl_salamandra_alignment.utils.html#rl_salamandra_alignment.utils.job_submission.submit_job_with_retries">[documentos]</a>
+<span class="k">def</span> <span class="nf">submit_job_with_retries</span><span class="p">(</span>
+        <span class="n">job_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">n_retries</span><span class="p">:</span> <span class="nb">int</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Submit a slurm job n_retries times with dependencies</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        job_file (str): Path to Slurm job file</span>
+<span class="sd">        n_retries (int): number of retries</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: job id of last submitted job</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">previous_job_id</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_retries</span><span class="p">):</span>
+        <span class="n">job_id</span> <span class="o">=</span> <span class="n">submit_job</span><span class="p">(</span><span class="n">job_file</span><span class="p">,</span> <span class="n">dependency</span><span class="o">=</span><span class="n">previous_job_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">job_id</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Submitted job </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> with ID </span><span class="si">{</span><span class="n">job_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">previous_job_id</span> <span class="o">=</span> <span class="n">job_id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to submit job </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">break</span>
+    <span class="k">return</span> <span class="n">job_id</span></div>
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Derechos de autor 2025, LangTech BSC.</p>
+  </div>
+
+  Compilado con <a href="https://www.sphinx-doc.org/">Sphinx</a> usando un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    proporcionado por <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

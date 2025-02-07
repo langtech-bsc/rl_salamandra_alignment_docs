@@ -47,9 +47,14 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Usage</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#configuration-file-for-experiment">Configuration file for Experiment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#experiment">Experiment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#configuration-file-for-an-experiment">Configuration file for an Experiment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-an-experiment">Running an experiment</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#debugging">Debugging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#skipping-evaluation">Skipping evaluation</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#subexperiments">Subexperiments</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#generating-job-scripts">Generating Job scripts</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html">RL - Salamandra Alignment</a></li>
@@ -86,9 +91,30 @@
   <section id="usage">
 <h1>Usage<a class="headerlink" href="#usage" title="Link to this heading"></a></h1>
 <p>After <a class="reference internal" href="installation.html"><span class="doc">installing</span></a>, you will be able to run RL experiments using the package.</p>
-<section id="configuration-file-for-experiment">
-<h2>Configuration file for Experiment<a class="headerlink" href="#configuration-file-for-experiment" title="Link to this heading"></a></h2>
-<p>First, you will need a configuration file in YAML for your experiment:</p>
+<section id="experiment">
+<h2>Experiment<a class="headerlink" href="#experiment" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>An experiment consists of two parts:</dt><dd><ul class="simple">
+<li><p>Training</p></li>
+<li><dl class="simple">
+<dt>Evaluation (optional)</dt><dd><ul>
+<li><p>Harness Evaluation</p></li>
+<li><p>Local Evaluation</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+<p>All the configurations and hyperparameters for an experiment must be specified in a <strong>configuration file</strong> in YAML.</p>
+<p>For evaluation, we use the Evaluation Harness, and, for tasks not implemented in the Evaluation Harness, we use custom scripts (This is what we call «Local Evaluation»).</p>
+<p>All evaluation jobs are submited to MareNostrum5 with dependencies to training jobs.</p>
+<p>Note that evaluation is optional: if you do not specify an <code class="docutils literal notranslate"><span class="pre">&quot;evaluation&quot;</span></code> field in your <cite>config.yaml</cite> file, then only training will happen.</p>
+</section>
+<section id="configuration-file-for-an-experiment">
+<h2>Configuration file for an Experiment<a class="headerlink" href="#configuration-file-for-an-experiment" title="Link to this heading"></a></h2>
+<p>First, you will need a configuration file in YAML for your experiment (The values marked with <code class="docutils literal notranslate"><span class="pre">None</span></code> are computed internally by the package):</p>
 <div class="literal-block-wrapper docutils container" id="example-yaml-config">
 <div class="code-block-caption"><span class="caption-text">Example YAML configuration file</span><a class="headerlink" href="#example-yaml-config" title="Link to this code"></a></div>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">execution</span><span class="p">:</span>
@@ -150,27 +176,74 @@
 <span class="w">    </span><span class="nt">WANDB_PROJECT</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;salamandra_alignment&quot;</span>
 <span class="w">    </span><span class="nt">WANDB_NAME</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;test_alignment&quot;</span>
 <span class="w">    </span><span class="c1"># WANDB_DIR: None</span>
+
+<span class="c1"># Evaluation is optional</span>
+<span class="nt">evaluation</span><span class="p">:</span>
+<span class="s">&quot;harness_tasks&quot;</span><span class="p p-Indicator">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;flores_en-es&quot;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;flores_es-ca&quot;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;wnli_es&quot;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;xlsum_es&quot;</span>
+<span class="s">&quot;harness_slurm&quot;</span><span class="p p-Indicator">:</span>
+<span class="c1"># job name, logs, and gpus are automatically computed</span>
+<span class="w">    </span><span class="nt">qos</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;acc_bscls&quot;</span>
+<span class="w">    </span><span class="nt">account</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;bsc88&quot;</span>
+<span class="w">    </span><span class="nt">nodes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+<span class="w">    </span><span class="nt">time</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;12:00:00&quot;</span>
+<span class="w">    </span><span class="c1"># job-name: None</span>
+<span class="w">    </span><span class="c1"># output: None</span>
+<span class="w">    </span><span class="c1"># error: None</span>
+<span class="w">    </span><span class="c1"># cpus-per-task: None #</span>
+<span class="w">    </span><span class="c1"># gres : None  # &quot;gpu:4&quot;</span>
 </pre></div>
 </div>
 </div>
-<p>The values marked with <code class="docutils literal notranslate"><span class="pre">None</span></code> are computed internally by the package.</p>
+</section>
+<section id="running-an-experiment">
+<h2>Running an experiment<a class="headerlink" href="#running-an-experiment" title="Link to this heading"></a></h2>
+<p>You can use your <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> file to run an experiment, using the <span class="xref std std-ref">CLI</span>:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>rl_salamandra_mn5<span class="w"> </span>config.yaml
+</pre></div>
+</div>
+<p>This will generate <strong>and</strong> submit slurm jobs to MareNostrum 5, you can find them in your <code class="docutils literal notranslate"><span class="pre">output_dir</span></code>.</p>
+<section id="debugging">
+<h3>Debugging<a class="headerlink" href="#debugging" title="Link to this heading"></a></h3>
+<p>For debugging, use the <code class="docutils literal notranslate"><span class="pre">--debug</span></code> flag:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>rl_salamandra_mn5<span class="w"> </span>config.yaml<span class="w"> </span>--debug
+</pre></div>
+</div>
+<p>In debugging mode, slurm scripts will be generated but not submitted.</p>
+</section>
+<section id="skipping-evaluation">
+<h3>Skipping evaluation<a class="headerlink" href="#skipping-evaluation" title="Link to this heading"></a></h3>
+<p>If you only want to train but not evaluate nmodels, you can use the <code class="docutils literal notranslate"><span class="pre">--no_evaluation</span></code> flag</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>rl_salamandra_mn5<span class="w"> </span>config.yaml<span class="w"> </span>--no_evaluation
+</pre></div>
+</div>
+<p>This will create the training and evaluation jobs for slurm, but it will <strong>only</strong> submit the training jobs. This may be useful when the evaluation queue is long, or when you want to make a quick experiment.</p>
+</section>
 </section>
 <section id="subexperiments">
 <h2>Subexperiments<a class="headerlink" href="#subexperiments" title="Link to this heading"></a></h2>
-<p>To experiment with different configurations of values, you can use lists in your <cite>config.yaml</cite> file.</p>
-<p>For example, the following <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> for one experiment executes 12 experiments:</p>
+<p>To experiment with different configurations of values, you can use <strong>lists</strong> in your <cite>config.yaml</cite> file.</p>
+<p>For example, the following <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> for one experiment executes 12 subexperiments:</p>
 <ul class="simple">
-<li><p>6 runs of DPO on 2 models with 3 learning rates, and</p></li>
-<li><p>other 6 runs for KTO</p></li>
+<li><p>6 runs of DPO: on 2 models with 3 learning rates, and</p></li>
+<li><p>6 runs of KTO: on the same 2 models with the same 3 learning rates</p></li>
 </ul>
+<p>Note that both hyphens (<code class="docutils literal notranslate"><span class="pre">-</span></code>) and square brackes (<code class="docutils literal notranslate"><span class="pre">[]</span></code>) work for writing lists in YAML.</p>
 <div class="literal-block-wrapper docutils container" id="example-subexperiments-config">
 <div class="code-block-caption"><span class="caption-text">Setting up subexperiments</span><a class="headerlink" href="#example-subexperiments-config" title="Link to this code"></a></div>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nn">...</span>
 <span class="nt">execution</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">algorithm</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;dpo&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;kto&quot;</span><span class="p p-Indicator">]</span>
+<span class="w">    </span><span class="nt">algorithm</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;dpo&quot;</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;kto&quot;</span>
 <span class="nn">...</span>
 <span class="nt">model_config_args</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">model_name_or_path</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;model_1&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;model_2&quot;</span><span class="p p-Indicator">]</span>
+<span class="w">    </span><span class="nt">model_name_or_path</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;model_1&quot;</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;model_2&quot;</span>
 <span class="nn">...</span>
 <span class="nt">rl_config_args</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">learning_rate</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">5.0e-6</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">1.0e-5</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">1.0e-6</span><span class="p p-Indicator">]</span>
@@ -178,15 +251,8 @@
 </pre></div>
 </div>
 </div>
-<p>Note that any of the values can be a list, <strong>except</strong> <code class="docutils literal notranslate"><span class="pre">output_dir</span></code> under <code class="docutils literal notranslate"><span class="pre">execution</span></code>. The <code class="docutils literal notranslate"><span class="pre">output_dir</span></code> must always be an absolute path.</p>
-</section>
-<section id="generating-job-scripts">
-<h2>Generating Job scripts<a class="headerlink" href="#generating-job-scripts" title="Link to this heading"></a></h2>
-<p>You can use your <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> file to run an experiment, using the <span class="xref std std-ref">CLI</span>:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>rl_salamandra_mn5<span class="w"> </span>config.yaml
-</pre></div>
-</div>
-<p>This will generate slurm jobs in your <code class="docutils literal notranslate"><span class="pre">output_dir</span></code>, which you can submit to MareNostrum 5.</p>
+<p>Note that any of the values in the configuration can be a list, <strong>except</strong> <code class="docutils literal notranslate"><span class="pre">output_dir</span></code> under <code class="docutils literal notranslate"><span class="pre">execution</span></code>. The <code class="docutils literal notranslate"><span class="pre">output_dir</span></code> must always be an absolute path.</p>
+<p>Furthermore, for a given configuration file, all subexperiments generated from it share the same <code class="docutils literal notranslate"><span class="pre">evaluation</span></code> field, which will <strong>not</strong> be unfolded. This means that you can specify lists inside the <code class="docutils literal notranslate"><span class="pre">evaluation</span></code> field (for example, lists of evaluation tasks), and doing so will not create more subexperiments.</p>
 </section>
 </section>
 

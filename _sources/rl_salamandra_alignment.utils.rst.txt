@@ -12,6 +12,14 @@ rl\_salamandra\_alignment.utils.general module
    :undoc-members:
    :show-inheritance:
 
+rl\_salamandra\_alignment.utils.job\_submission module
+------------------------------------------------------
+
+.. automodule:: rl_salamandra_alignment.utils.job_submission
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

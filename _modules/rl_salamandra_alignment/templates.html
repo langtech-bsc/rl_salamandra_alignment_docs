@@ -126,6 +126,29 @@
     <span class="k">return</span> <span class="n">script_template</span></div>
 
 
+
+<div class="viewcode-block" id="get_harness_template">
+<a class="viewcode-back" href="../../rl_salamandra_alignment.templates.html#rl_salamandra_alignment.templates.get_harness_template">[documentos]</a>
+<span class="k">def</span> <span class="nf">get_harness_template</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get template for the script for executing the Evaluation harness</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: template for the script for executing the Evaluation harness</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rl_salamanda_alignment_package_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span>
+        <span class="n">pkg_resources</span><span class="o">.</span><span class="n">files</span><span class="p">(</span><span class="s1">&#39;rl_salamandra_alignment&#39;</span><span class="p">))</span>
+
+    <span class="n">script_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="n">rl_salamanda_alignment_package_path</span><span class="p">,</span>
+        <span class="s2">&quot;templates&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;evaluation_harness.sh&quot;</span>
+    <span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">script_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">script_template</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">script_template</span></div>
+
 </pre></div>
 
            </div>
