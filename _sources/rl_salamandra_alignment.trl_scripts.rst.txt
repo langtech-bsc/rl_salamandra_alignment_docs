@@ -76,6 +76,14 @@ rl\_salamandra\_alignment.trl\_scripts.gkd module
    :undoc-members:
    :show-inheritance:
 
+rl\_salamandra\_alignment.trl\_scripts.grpo module
+--------------------------------------------------
+
+.. automodule:: rl_salamandra_alignment.trl_scripts.grpo
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 rl\_salamandra\_alignment.trl\_scripts.kto module
 -------------------------------------------------
 
