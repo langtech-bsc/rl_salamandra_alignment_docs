@@ -72,6 +72,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#rl_salamandra_alignment.generate_scripts.generate_one_job_set"><code class="docutils literal notranslate"><span class="pre">generate_one_job_set()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#rl_salamandra_alignment.generate_scripts.generate_one_training_job"><code class="docutils literal notranslate"><span class="pre">generate_one_training_job()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#rl_salamandra_alignment.generate_scripts.generate_slurm_preamble"><code class="docutils literal notranslate"><span class="pre">generate_slurm_preamble()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#rl_salamandra_alignment.generate_scripts.get_config_ids"><code class="docutils literal notranslate"><span class="pre">get_config_ids()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#rl_salamandra_alignment.generate_scripts.get_output_dir"><code class="docutils literal notranslate"><span class="pre">get_output_dir()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#rl_salamandra_alignment.generate_scripts.get_script_args_string"><code class="docutils literal notranslate"><span class="pre">get_script_args_string()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#rl_salamandra_alignment.generate_scripts.replace_in_template"><code class="docutils literal notranslate"><span class="pre">replace_in_template()</span></code></a></li>
@@ -381,6 +382,24 @@
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rl_salamandra_alignment.generate_scripts.get_config_ids">
+<span class="sig-prename descclassname"><span class="pre">rl_salamandra_alignment.generate_scripts.</span></span><span class="sig-name descname"><span class="pre">get_config_ids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rl_salamandra_alignment/generate_scripts.html#get_config_ids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rl_salamandra_alignment.generate_scripts.get_config_ids" title="Link to this definition"></a></dt>
+<dd><p>Give an unique ID to each config.
+Each ID corresponds to a subexperiment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>config_list</strong> (<em>list</em>) – List of config dicts</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of tuples (id, config)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
 </dd>
 </dl>
 </dd></dl>
