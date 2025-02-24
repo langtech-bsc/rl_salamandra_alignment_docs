@@ -20,29 +20,29 @@ rl\_salamandra\_alignment.cli module
 
 .. automodule:: rl_salamandra_alignment.cli
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 rl\_salamandra\_alignment.convert\_dataset module
 -------------------------------------------------
 
 .. automodule:: rl_salamandra_alignment.convert_dataset
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 rl\_salamandra\_alignment.generate\_scripts module
 --------------------------------------------------
 
 .. automodule:: rl_salamandra_alignment.generate_scripts
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Module contents
 ---------------
 
 .. automodule:: rl_salamandra_alignment
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

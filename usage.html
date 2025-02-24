@@ -185,22 +185,22 @@
 
 <span class="c1"># Evaluation is optional</span>
 <span class="nt">evaluation</span><span class="p">:</span>
-<span class="s">&quot;harness_tasks&quot;</span><span class="p p-Indicator">:</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;flores_en-es&quot;</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;flores_es-ca&quot;</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;wnli_es&quot;</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;xlsum_es&quot;</span>
-<span class="s">&quot;harness_slurm&quot;</span><span class="p p-Indicator">:</span>
-<span class="c1"># job name, logs, and gpus are automatically computed</span>
-<span class="w">    </span><span class="nt">qos</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;acc_bscls&quot;</span>
-<span class="w">    </span><span class="nt">account</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;bsc88&quot;</span>
-<span class="w">    </span><span class="nt">nodes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
-<span class="w">    </span><span class="nt">time</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;12:00:00&quot;</span>
-<span class="w">    </span><span class="c1"># job-name: None</span>
-<span class="w">    </span><span class="c1"># output: None</span>
-<span class="w">    </span><span class="c1"># error: None</span>
-<span class="w">    </span><span class="c1"># cpus-per-task: None #</span>
-<span class="w">    </span><span class="c1"># gres : None  # &quot;gpu:4&quot;</span>
+<span class="w">    </span><span class="nt">harness_tasks</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;flores_en-es&quot;</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;flores_es-ca&quot;</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;wnli_es&quot;</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;xlsum_es&quot;</span>
+<span class="w">    </span><span class="nt">harness_slurm</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># job name, logs, and gpus are automatically computed</span>
+<span class="w">        </span><span class="nt">qos</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;acc_bscls&quot;</span>
+<span class="w">        </span><span class="nt">account</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;bsc88&quot;</span>
+<span class="w">        </span><span class="nt">nodes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+<span class="w">        </span><span class="nt">time</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;12:00:00&quot;</span>
+<span class="w">        </span><span class="c1"># job-name: None</span>
+<span class="w">        </span><span class="c1"># output: None</span>
+<span class="w">        </span><span class="c1"># error: None</span>
+<span class="w">        </span><span class="c1"># cpus-per-task: None #</span>
+<span class="w">        </span><span class="c1"># gres : None  # &quot;gpu:4&quot;</span>
 </pre></div>
 </div>
 </div>

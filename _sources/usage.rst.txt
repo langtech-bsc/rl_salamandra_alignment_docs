@@ -100,22 +100,22 @@ First, you will need a configuration file in YAML for your experiment (The value
 
     # Evaluation is optional
     evaluation:
-    "harness_tasks":
-        - "flores_en-es"
-        - "flores_es-ca"
-        - "wnli_es"
-        - "xlsum_es"
-    "harness_slurm":
-    # job name, logs, and gpus are automatically computed
-        qos: "acc_bscls"
-        account: "bsc88"
-        nodes: 2
-        time: "12:00:00"
-        # job-name: None
-        # output: None
-        # error: None
-        # cpus-per-task: None # 
-        # gres : None  # "gpu:4"
+        harness_tasks:
+            - "flores_en-es"
+            - "flores_es-ca"
+            - "wnli_es"
+            - "xlsum_es"
+        harness_slurm:
+        # job name, logs, and gpus are automatically computed
+            qos: "acc_bscls"
+            account: "bsc88"
+            nodes: 2
+            time: "12:00:00"
+            # job-name: None
+            # output: None
+            # error: None
+            # cpus-per-task: None # 
+            # gres : None  # "gpu:4"
 
 
 ----------------------

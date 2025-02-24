@@ -9,21 +9,21 @@ rl\_salamandra\_alignment.utils.general module
 
 .. automodule:: rl_salamandra_alignment.utils.general
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 rl\_salamandra\_alignment.utils.job\_submission module
 ------------------------------------------------------
 
 .. automodule:: rl_salamandra_alignment.utils.job_submission
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Module contents
 ---------------
 
 .. automodule:: rl_salamandra_alignment.utils
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

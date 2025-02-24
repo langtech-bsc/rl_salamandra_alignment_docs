@@ -6,5 +6,5 @@ Module contents
 
 .. automodule:: rl_salamandra_alignment.distributed_configs
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
