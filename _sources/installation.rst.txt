@@ -11,14 +11,12 @@ Stable release
 To install RL - Salamandra Alignment, first prepare a new virtual environment:
 
 .. code-block:: console
-    
-    $ pip install trl==0.13.0
-    $ pip install wheel
-    $ pip install flash-attn==2.6.3 --no-build-isolation
-    $ pip install sentencepiece==0.2.0 protobuf==5.28.2
-    $ pip install deepspeed==0.15.1
+    $ # Python 3.9.16
+    $ pip install wheel setuptools
+    $ pip install trl==0.12.1
+    $ MAX_JOBS=4 pip install flash-attn==2.7.3 --no-build-isolation
+    $ pip install pip install --upgrade transformers==4.49.0 sentencepiece==0.2.0 protobuf==5.29.3 deepspeed==0.16.4 wandb==0.19.7 importlib_metadata==8.6.1
     $ pip uninstall triton -y
-    $ pip install wandb
 
 Now, run this command in your terminal:
 
