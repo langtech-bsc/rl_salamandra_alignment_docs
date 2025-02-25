@@ -11,6 +11,7 @@ Stable release
 To install RL - Salamandra Alignment, first prepare a new virtual environment:
 
 .. code-block:: console
+    
     $ # Python 3.9.16
     $ pip install wheel setuptools
     $ pip install trl==0.12.1
