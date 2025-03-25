@@ -23,7 +23,7 @@ Now, run this command in your terminal:
 
 .. code-block:: console
 
-    $ pip install git+https://github.com/langtech-bsc/rl_salamandra_alignment.git
+    $ pip install --upgrade --force-reinstall git+https://github.com/langtech-bsc/rl_salamandra_alignment.git
 
 This is the preferred method to install RL - Salamandra Alignment, as it will always install the most recent stable release.
 
