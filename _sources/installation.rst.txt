@@ -15,6 +15,9 @@ To install RL - Salamandra Alignment, first prepare a new virtual environment:
     $ # Python 3.9.16
     $ pip install wheel setuptools
     $ pip install trl==0.12.1
+    $ # Specific cuda version for flash attention
+    $ module load cuda/12.6 
+    $ # Installing this version of flash attention can take between 1-2 hours
     $ MAX_JOBS=4 pip install flash-attn==2.7.3 --no-build-isolation
     $ pip install --upgrade transformers==4.49.0 sentencepiece==0.2.0 protobuf==5.29.3 deepspeed==0.16.4 wandb==0.19.7 importlib_metadata==8.6.1
     $ pip uninstall triton -y
