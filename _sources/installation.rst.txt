@@ -11,14 +11,41 @@ Stable release
 To install RL - Salamandra Alignment, first prepare a new virtual environment:
 
 .. code-block:: console
+    # Create a Python 3.12 venv
+    module load impi intel hdf5 mkl cuda/12.6 python/3.12.1-gcc
+    VENV_PATH=<your_venv_path>
+    python -m venv $VENV_PATH
+
+
+This is how you activate a `python 3.12` virtual environment in Mare Nostrum 5:
+
+.. code-block:: console
+    # Activate a Python 3.12 venv
+    module load impi intel hdf5 mkl cuda/12.6 python/3.12.1-gcc
+    VENV_PATH=<your_venv_path>
+    # It is extremely important to change the python path
+    export PYTHONPATH="$VENV_PATH/lib/python3.12/site-packages"
+    source $VENV_PATH/bin/activate
+
+
+The most complicated part of the installation is the compilation of `flash-attn`:  
+
+.. code-block:: console
     
-    $ # Python 3.9.16
-    $ pip install wheel setuptools
-    $ pip install trl==0.12.1
-    $ # Specific cuda version for flash attention
-    $ module load cuda/12.6 
-    $ # Installing this version of flash attention can take between 1-2 hours
-    $ MAX_JOBS=4 pip install flash-attn==2.7.3 --no-build-isolation
+    $ # Inside yout Python 3.12.1 venv
+    $ pip install wheel setuptools packaging
+    $ pip install ninja==1.11.1.4
+    $ pip install trl==0.18.1
+    # Specify the compilers. cuda 12.6 is already loaded when activating the venv
+    $ export CXX=g++
+    $ export CC=gcc
+    $ # Compiling flash attention can take between 1-2 hours
+    $ MAX_JOBS=8 pip install --verbose flash-attn==2.7.4.post1 --no-build-isolation --use-pep517
+
+Finally, you can install all the other requirements:
+
+.. code-block:: console
+    # Inside yout Python 3.12.1 venv
     $ pip install --upgrade transformers==4.51.3 sentencepiece==0.2.0 protobuf==5.29.3 deepspeed==0.16.4 wandb==0.19.7 importlib_metadata==8.6.1
 
 Now, run this command in your terminal:
@@ -48,7 +75,7 @@ After preparing a new virtual environment (explained above), you can clone the p
     $ git clone https://github.com/langtech-bsc/rl_salamandra_alignment.git
 
 
-Once you have a copy of the source, you can install it in editable mode with:
+Once you have a copy of the source, you can navigate to your developement branch, and install it in editable mode with:
 
 .. code-block:: console
 
