@@ -77,24 +77,28 @@ The sources for RL - Salamandra Alignment can be downloaded from the `Github rep
 
 You will need to create and activate a virtual environment, like explained above.
 
-To install `trl` for the experimental release, clone our `fork of TRL`_Github, checkout the relevant branch and install it:
+To install `trl` for the experimental release, clone our `fork of TRL`_ from Github, checkout the relevant branch and install it:
+
+.. _fork of TRL: https://github.com/langtech-bsc/trl
 
 .. code-block:: console
+
     $ cd <path to local trl repo>
     $ pip install -e trl
 
-.. _fork of TRL: https://github.com/langtech-bsc/trl
 
 Then, you can proceed with installing `flash-attn` and the other required packages.
 
 Now, you can clone the public repository:
 
 .. code-block:: console
+
     $ git clone https://github.com/langtech-bsc/rl_salamandra_alignment.git
 
 
 Once you have a copy of the source, you can navigate to your developement branch, and install it in editable mode with:
 
 .. code-block:: console
+
     $ cd <path to local rl repo>
     $ pip install -e rl_salamandra_alignment
