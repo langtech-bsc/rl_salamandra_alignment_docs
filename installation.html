@@ -86,19 +86,19 @@
 <section id="stable-release">
 <h2>Stable release<a class="headerlink" href="#stable-release" title="Link to this heading"></a></h2>
 <p>To install RL - Salamandra Alignment, first prepare a new virtual environment:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span>Create<span class="w"> </span>a<span class="w"> </span>Python<span class="w"> </span><span class="m">3</span>.12<span class="w"> </span>venv
-<span class="go">module load impi intel hdf5 mkl cuda/12.6 python/3.12.1-gcc</span>
-<span class="go">VENV_PATH=&lt;your_venv_path&gt;</span>
-<span class="go">python -m venv $VENV_PATH</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="c1"># Create a Python 3.12 venv</span>
+<span class="gp">$ </span>module<span class="w"> </span>load<span class="w"> </span>impi<span class="w"> </span>intel<span class="w"> </span>hdf5<span class="w"> </span>mkl<span class="w"> </span>cuda/12.6<span class="w"> </span>python/3.12.1-gcc
+<span class="gp">$ </span><span class="nv">VENV_PATH</span><span class="o">=</span>&lt;your_venv_path&gt;
+<span class="gp">$ </span>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span><span class="nv">$VENV_PATH</span>
 </pre></div>
 </div>
 <p>This is how you activate a <cite>python 3.12</cite> virtual environment in Mare Nostrum 5:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span>Activate<span class="w"> </span>a<span class="w"> </span>Python<span class="w"> </span><span class="m">3</span>.12<span class="w"> </span>venv
-<span class="go">module load impi intel hdf5 mkl cuda/12.6 python/3.12.1-gcc</span>
-<span class="go">VENV_PATH=&lt;your_venv_path&gt;</span>
-<span class="gp"># </span>It<span class="w"> </span>is<span class="w"> </span>extremely<span class="w"> </span>important<span class="w"> </span>to<span class="w"> </span>change<span class="w"> </span>the<span class="w"> </span>python<span class="w"> </span>path
-<span class="go">export PYTHONPATH=&quot;$VENV_PATH/lib/python3.12/site-packages&quot;</span>
-<span class="go">source $VENV_PATH/bin/activate</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="c1"># Activate a Python 3.12 venv</span>
+<span class="gp">$ </span>module<span class="w"> </span>load<span class="w"> </span>impi<span class="w"> </span>intel<span class="w"> </span>hdf5<span class="w"> </span>mkl<span class="w"> </span>cuda/12.6<span class="w"> </span>python/3.12.1-gcc
+<span class="gp">$ </span><span class="nv">VENV_PATH</span><span class="o">=</span>&lt;your_venv_path&gt;
+<span class="gp">$ </span><span class="c1"># It is extremely important to change the python path</span>
+<span class="gp">$ </span><span class="nb">export</span><span class="w"> </span><span class="nv">PYTHONPATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$VENV_PATH</span><span class="s2">/lib/python3.12/site-packages&quot;</span>
+<span class="gp">$ </span><span class="nb">source</span><span class="w"> </span><span class="nv">$VENV_PATH</span>/bin/activate
 </pre></div>
 </div>
 <p>The most complicated part of the installation is the compilation of <cite>flash-attn</cite>:</p>
@@ -106,7 +106,7 @@
 <span class="gp">$ </span>pip<span class="w"> </span>install<span class="w"> </span>wheel<span class="w"> </span>setuptools<span class="w"> </span>packaging
 <span class="gp">$ </span>pip<span class="w"> </span>install<span class="w"> </span><span class="nv">ninja</span><span class="o">==</span><span class="m">1</span>.11.1.4
 <span class="gp">$ </span>pip<span class="w"> </span>install<span class="w"> </span><span class="nv">trl</span><span class="o">==</span><span class="m">0</span>.18.1
-<span class="gp"># </span>Specify<span class="w"> </span>the<span class="w"> </span>compilers.<span class="w"> </span>cuda<span class="w"> </span><span class="m">12</span>.6<span class="w"> </span>is<span class="w"> </span>already<span class="w"> </span>loaded<span class="w"> </span>when<span class="w"> </span>activating<span class="w"> </span>the<span class="w"> </span>venv
+<span class="gp">$ </span><span class="c1"># Specify the compilers. cuda 12.6 is already loaded when activating the venv</span>
 <span class="gp">$ </span><span class="nb">export</span><span class="w"> </span><span class="nv">CXX</span><span class="o">=</span>g++
 <span class="gp">$ </span><span class="nb">export</span><span class="w"> </span><span class="nv">CC</span><span class="o">=</span>gcc
 <span class="gp">$ </span><span class="c1"># Compiling flash attention can take between 1-2 hours</span>
@@ -114,7 +114,7 @@
 </pre></div>
 </div>
 <p>Finally, you can install all the other requirements:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span>Inside<span class="w"> </span>yout<span class="w"> </span>Python<span class="w"> </span><span class="m">3</span>.12.1<span class="w"> </span>venv
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="c1"># Inside yout Python 3.12.1 venv</span>
 <span class="gp">$ </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span><span class="nv">transformers</span><span class="o">==</span><span class="m">4</span>.51.3<span class="w"> </span><span class="nv">sentencepiece</span><span class="o">==</span><span class="m">0</span>.2.0<span class="w"> </span><span class="nv">protobuf</span><span class="o">==</span><span class="m">5</span>.29.3<span class="w"> </span><span class="nv">deepspeed</span><span class="o">==</span><span class="m">0</span>.16.4<span class="w"> </span><span class="nv">wandb</span><span class="o">==</span><span class="m">0</span>.19.7<span class="w"> </span><span class="nv">importlib_metadata</span><span class="o">==</span><span class="m">8</span>.6.1
 </pre></div>
 </div>
