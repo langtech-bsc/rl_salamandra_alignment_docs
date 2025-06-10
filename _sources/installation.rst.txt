@@ -11,6 +11,7 @@ Stable release
 To install RL - Salamandra Alignment, first prepare a new virtual environment:
 
 .. code-block:: console
+
     # Create a Python 3.12 venv
     module load impi intel hdf5 mkl cuda/12.6 python/3.12.1-gcc
     VENV_PATH=<your_venv_path>
@@ -20,6 +21,7 @@ To install RL - Salamandra Alignment, first prepare a new virtual environment:
 This is how you activate a `python 3.12` virtual environment in Mare Nostrum 5:
 
 .. code-block:: console
+
     # Activate a Python 3.12 venv
     module load impi intel hdf5 mkl cuda/12.6 python/3.12.1-gcc
     VENV_PATH=<your_venv_path>
@@ -45,6 +47,7 @@ The most complicated part of the installation is the compilation of `flash-attn`
 Finally, you can install all the other requirements:
 
 .. code-block:: console
+
     # Inside yout Python 3.12.1 venv
     $ pip install --upgrade transformers==4.51.3 sentencepiece==0.2.0 protobuf==5.29.3 deepspeed==0.16.4 wandb==0.19.7 importlib_metadata==8.6.1
 
@@ -66,7 +69,9 @@ you through the process.
 Experimental Release
 ------------
 
-The sources for RL - Salamandra Alignment can be downloaded from the `Github repo <https://github.com/langtech-bsc/rl_salamandra_alignment>`.
+The sources for RL - Salamandra Alignment can be downloaded from the `Github repo`_.
+
+.. _Github repo: https://github.com/langtech-bsc/rl_salamandra_alignment
 
 After preparing a new virtual environment (explained above), you can clone the public repository:
 

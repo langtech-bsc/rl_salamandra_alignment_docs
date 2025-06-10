@@ -386,9 +386,38 @@
 
     <span class="c1"># Automatically determine dir for training (checkpoints)</span>
     <span class="n">environment_dict</span><span class="p">[</span><span class="s2">&quot;TRAINING_OUTPUT_DIR&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">internal_dir_paths</span><span class="p">[</span><span class="s2">&quot;training&quot;</span><span class="p">]</span>
+    
+    <span class="c1"># original model dir</span>
+    <span class="n">environment_dict</span><span class="p">[</span><span class="s2">&quot;ORIGINAL_MODEL_PATH&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;model_config_args&quot;</span><span class="p">][</span><span class="s2">&quot;model_name_or_path&quot;</span><span class="p">]</span>
 
     <span class="c1"># venv</span>
-    <span class="n">environment_dict</span><span class="p">[</span><span class="s2">&quot;VENV_DIR&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;execution&quot;</span><span class="p">][</span><span class="s2">&quot;venv&quot;</span><span class="p">]</span>
+    <span class="n">venv_dir</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;execution&quot;</span><span class="p">][</span><span class="s2">&quot;venv&quot;</span><span class="p">]</span>
+    <span class="n">environment_dict</span><span class="p">[</span><span class="s2">&quot;VENV_DIR&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">venv_dir</span>
+    <span class="c1">## handle python 3.12 venvs (the name must contain &quot;python&quot; and &quot;3.12&quot;)</span>
+    <span class="k">if</span> <span class="s2">&quot;python&quot;</span> <span class="ow">in</span> <span class="n">venv_dir</span> <span class="ow">and</span> <span class="p">(</span><span class="s2">&quot;3.12&quot;</span> <span class="ow">in</span> <span class="n">venv_dir</span> <span class="ow">or</span> <span class="s2">&quot;312&quot;</span> <span class="ow">in</span> <span class="n">venv_dir</span><span class="p">):</span>
+        <span class="c1"># load modules</span>
+        <span class="n">filled_template</span> <span class="o">=</span> <span class="n">replace_in_template</span><span class="p">(</span>
+            <span class="n">filled_template</span><span class="p">,</span>
+            <span class="s2">&quot;LOAD_MODULES&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;module load impi intel hdf5 mkl cuda/12.6 python/3.12.1-gcc&quot;</span>
+        <span class="p">)</span>
+        <span class="c1"># setup the pythonpath</span>
+        <span class="n">filled_template</span> <span class="o">=</span> <span class="n">replace_in_template</span><span class="p">(</span>
+            <span class="n">filled_template</span><span class="p">,</span>
+            <span class="s2">&quot;SET_PYTHONPATH&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;export PYTHONPATH=</span><span class="se">\&quot;</span><span class="s2">$VENV_DIR/lib/python3.12/site-packages</span><span class="se">\&quot;</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">filled_template</span> <span class="o">=</span> <span class="n">replace_in_template</span><span class="p">(</span>
+            <span class="n">filled_template</span><span class="p">,</span>
+            <span class="s2">&quot;LOAD_MODULES&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>
+        <span class="n">filled_template</span> <span class="o">=</span> <span class="n">replace_in_template</span><span class="p">(</span>
+            <span class="n">filled_template</span><span class="p">,</span>
+            <span class="s2">&quot;SET_PYTHONPATH&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>
 
     <span class="c1"># Generate export statements:</span>
     <span class="n">environment_variables</span> <span class="o">=</span> <span class="p">[</span>
@@ -475,6 +504,8 @@
     <span class="c1"># Model args</span>
     <span class="c1"># ============</span>
     <span class="n">model_config_args</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;model_config_args&quot;</span><span class="p">])</span>
+    <span class="c1"># automaticall determine path to original model</span>
+    <span class="n">model_config_args</span><span class="p">[</span><span class="s2">&quot;model_name_or_path&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;$ORIGINAL_MODEL_PATH&quot;</span>
 
     <span class="c1"># automatically determine training dir:</span>
     <span class="n">model_config_args</span><span class="p">[</span><span class="s2">&quot;output_dir&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;$TRAINING_OUTPUT_DIR&quot;</span>
@@ -754,7 +785,7 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        list: List of tuples (id, config)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">unique_timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%H_%M_</span><span class="si">%d</span><span class="s2">_%m_%Y&quot;</span><span class="p">)</span>
+    <span class="n">unique_timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y_%m_</span><span class="si">%d</span><span class="s2">_%H_%M&quot;</span><span class="p">)</span>
     <span class="n">configs_with_id</span> <span class="o">=</span> <span class="p">[]</span>
     
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">config</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">config_list</span><span class="p">):</span>
