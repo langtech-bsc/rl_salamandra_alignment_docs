@@ -69,19 +69,32 @@ you through the process.
 Experimental Release
 ------------
 
+The experimental release is for custom changes to our package or to external packages, like `trl`.
+
 The sources for RL - Salamandra Alignment can be downloaded from the `Github repo`_.
 
 .. _Github repo: https://github.com/langtech-bsc/rl_salamandra_alignment
 
-After preparing a new virtual environment (explained above), you can clone the public repository:
+You will need to create and activate a virtual environment, like explained above.
+
+To install `trl` for the experimental release, clone our `fork of TRL`_Github, checkout the relevant branch and install it:
 
 .. code-block:: console
+    $ cd <path to local trl repo>
+    $ pip install -e trl
 
+.. _fork of TRL: https://github.com/langtech-bsc/trl
+
+Then, you can proceed with installing `flash-attn` and the other required packages.
+
+Now, you can clone the public repository:
+
+.. code-block:: console
     $ git clone https://github.com/langtech-bsc/rl_salamandra_alignment.git
 
 
 Once you have a copy of the source, you can navigate to your developement branch, and install it in editable mode with:
 
 .. code-block:: console
-
+    $ cd <path to local rl repo>
     $ pip install -e rl_salamandra_alignment
